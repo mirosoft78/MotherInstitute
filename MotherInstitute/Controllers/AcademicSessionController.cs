@@ -34,7 +34,7 @@ namespace MotherInstitute.Controllers
         {
             if (string.IsNullOrWhiteSpace(session.NAME))
             {
-                TempData["ErrorMessage"] = "Session name is required.";
+                TempData["ErrorMessage"] = "Session name is .";
                 return RedirectToAction("Index");
             }
 
