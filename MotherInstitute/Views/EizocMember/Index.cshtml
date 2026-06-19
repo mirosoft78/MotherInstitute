@@ -1,0 +1,248 @@
+﻿@model System.Data.DataTable
+
+@{
+    ViewData["Title"] = "Excel File Upload";
+    int serialNo = 1;
+}
+
+<div class="main-content-box">
+
+    <style>
+
+            .page-header {
+                padding: 10px 16px;
+                border-radius: 10px;
+                background: linear-gradient(90deg, #2563eb, #10c4df);
+                margin-bottom: 15px;
+            }
+
+                .page-header h2 {
+                    margin: 0;
+                    color: white;
+                    text-align: center;
+                    font-size: 22px;
+                    font-weight: 700;
+                }
+
+            .upload-form {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-bottom: 20px;
+                padding: 10px 5px;
+            }
+
+                .upload-form label {
+                    font-size: 14px;
+                    font-weight: 700;
+                }
+
+                .upload-form input[type=file] {
+                    border: 1px solid #d1d5db;
+                    padding: 5px;
+                    border-radius: 6px;
+                    background: white;
+                }
+
+                .upload-form button {
+                    background: #2563eb;
+                    color: white;
+                    border: none;
+                    padding: 8px 18px;
+                    border-radius: 6px;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+            .table-title {
+                text-align: center;
+                color: #2563eb;
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+
+            .table-wrapper {
+                width: 100%;
+                overflow-x: auto;
+                border-radius: 8px;
+            }
+
+            .member-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                min-width: max-content;
+            }
+
+                .member-table thead tr {
+                    background: #1e40af;
+                }
+
+                .member-table th {
+                    color: white;
+                    padding: 10px 14px;
+                    border: 1px solid #3150b5;
+                    white-space: nowrap;
+                    font-size: 13px;
+                    text-transform: uppercase;
+                }
+
+                .member-table td {
+                    padding: 8px 12px;
+                    border: 1px solid #e5e7eb;
+                    white-space: nowrap;
+                    font-size: 12px;
+                }
+
+                .member-table tbody tr:nth-child(even) {
+                    background: #f8fafc;
+                }
+
+                .member-table tbody tr:hover {
+                    background: #e0f2fe;
+                }
+
+            .no-data {
+                text-align: center;
+                padding: 20px;
+                font-weight: 600;
+            }
+
+    </style>
+
+    <div class="page-header">
+        <h2>Excel File Upload</h2>
+    </div>
+
+    <form asp-action="UploadExcel"
+          asp-controller="EizocMember"
+          method="post"
+          enctype="multipart/form-data"
+          class="upload-form">
+
+        @Html.AntiForgeryToken()
+
+        <label>Upload Excel / CSV File</label>
+
+        <input type="file"
+               name="excelFile"
+               accept=".xlsx,.xls,.csv" />
+
+        <button type="submit">
+            Upload
+        </button>
+
+    </form>
+
+    <div class="table-title">
+        Saved Excel Data
+    </div>
+
+    @if (Model != null)
+    {
+        <div class="table-wrapper">
+
+            <table class="member-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>SLNO</th>
+
+                        @foreach (System.Data.DataColumn col in Model.Columns)
+                        {
+                            if (col.ColumnName != "SLNO")
+                            {
+                                <th>
+                                    @col.ColumnName
+                                </th>
+                            }
+                        }
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model.Rows.Count > 0)
+                    {
+                        @foreach (System.Data.DataRow row in Model.Rows)
+                        {
+                            <tr>
+
+                                <td>
+                                    @serialNo
+                                </td>
+
+                                @for (int i = 0; i < Model.Columns.Count; i++)
+                                {
+                                    if (Model.Columns[i].ColumnName != "SLNO")
+                                    {
+                                        <td>
+                                            @row[i]
+                                        </td>
+                                    }
+                                }
+
+                            </tr>
+
+                            serialNo++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="@Model.Columns.Count"
+                                class="no-data">
+
+                                No records found.
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>
+
+<script>
+
+    var successMessage =
+        '@TempData["SuccessMessage"]';
+
+    var errorMessage =
+        '@TempData["ErrorMessage"]';
+
+    var rowError =
+        '@TempData["RowError"]';
+
+    if (successMessage &&
+        successMessage !== '') {
+
+        alert(successMessage);
+    }
+
+    if (errorMessage &&
+        errorMessage !== '') {
+
+        alert(errorMessage);
+    }
+
+    if (rowError &&
+        rowError !== '') {
+
+        alert(rowError);
+    }
+
+</script>

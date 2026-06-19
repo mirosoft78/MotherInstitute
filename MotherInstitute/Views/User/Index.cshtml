@@ -1,0 +1,471 @@
+﻿@model IEnumerable<MotherInstitute.Models.User>
+
+<div class="main-content-box">
+
+    <style>
+
+            .user-form-title {
+                margin-bottom: 8px;
+                color: #374151;
+                font-size: 26px;
+                font-weight: 700;
+            }
+
+            .create-user-form {
+                margin-top: 10px;
+                margin-bottom: 18px;
+            }
+
+            .user-form-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                column-gap: 45px;
+                row-gap: 8px;
+                align-items: center;
+                max-width: 950px;
+            }
+
+            .page-header {
+                padding: 8px 16px;
+                border-radius: 10px;
+                background: linear-gradient(90deg, #0b5ed7, #1ec8ff);
+                margin-bottom: 8px;
+            }
+
+                .page-header h2 {
+                    margin: 0;
+                    font-size: 22px;
+                    color: white;
+                    text-align: center;
+                    font-weight: 700;
+                }
+
+            .form-group-custom {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .form-label-custom {
+                width: 75px;
+                min-width: 75px;
+                font-size: 13px;
+                font-weight: 600;
+                color: #374151;
+            }
+
+            .form-input-custom {
+                width: 100%;
+                max-width: 250px;
+                height: 30px;
+                padding: 4px 8px;
+                border: 1px solid #d1d5db;
+                border-radius: 5px;
+                font-size: 12px;
+                outline: none;
+                background: #fff;
+            }
+
+                .form-input-custom:focus {
+                    border-color: #2563eb;
+                    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+                }
+
+            .empty-field-warning {
+                border-color: #ef4444 !important;
+            }
+
+            .save-btn-row {
+                margin-top: 10px;
+            }
+
+            .save-btn-custom {
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 5px 14px;
+                border-radius: 5px;
+                font-weight: 600;
+                font-size: 12px;
+                cursor: pointer;
+                height: 30px;
+            }
+
+                .save-btn-custom:hover {
+                    background: #1d4ed8;
+                }
+
+            .user-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 8px;
+                background: white;
+            }
+
+                .user-table thead tr {
+                    background: #1e40af;
+                }
+
+                .user-table th {
+                    color: white;
+                    padding: 6px 8px;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    height: 30px;
+                    border-right: 1px solid rgba(255,255,255,0.10);
+                    white-space: nowrap;
+                }
+
+                .user-table td {
+                    padding: 4px 8px;
+                    border-bottom: 1px solid #e5e7eb;
+                    vertical-align: middle;
+                    font-size: 12px;
+                    text-align: center;
+                    height: 32px;
+                    line-height: 1.1;
+                    white-space: nowrap;
+                }
+
+                .user-table tbody tr:nth-child(even) {
+                    background: #fafafa;
+                }
+
+                .user-table tbody tr:hover {
+                    background: #edf4ff;
+                }
+
+            .action-icon {
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+            }
+
+            .inline-edit-box {
+                display: none;
+                width: 90px;
+                height: 24px;
+                padding: 2px 5px;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
+                font-size: 11px;
+            }
+
+            @@media (max-width: 900px) {
+
+                .user-form-grid {
+                    grid-template-columns: 1fr;
+                    column-gap: 0;
+                }
+
+                .form-group-custom {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 4px;
+                }
+
+                .form-label-custom {
+                    width: 100%;
+                    min-width: 100%;
+                }
+
+                .form-input-custom {
+                    max-width: 100%;
+                }
+
+                .user-table {
+                    display: block;
+                    overflow-x: auto;
+                }
+            }
+
+    </style>
+
+    <div class="page-header">
+        <h2>Manage Users</h2>
+    </div>
+
+    <div class="page-form-row create-user-form">
+        <h3 class="user-form-title">Create New User</h3>
+
+        <form asp-action="Create" method="post" id="userCreateForm">
+            @Html.AntiForgeryToken()
+
+            <div class="user-form-grid">
+
+                <div class="form-group-custom">
+                    <label class="form-label-custom">Login ID</label>
+                    <input type="text" id="LOGINID" name="LOGINID"
+                           class="form-input-custom check-empty" />
+                </div>
+
+                <div class="form-group-custom">
+                    <label class="form-label-custom">Password</label>
+                    <input type="text" id="PSW" name="PSW"
+                           class="form-input-custom check-empty" />
+                </div>
+
+                <div class="form-group-custom">
+                    <label class="form-label-custom">Name</label>
+                    <input type="text" id="NAME" name="NAME"
+                           class="form-input-custom check-empty" />
+                </div>
+
+                <div class="form-group-custom">
+                    <label class="form-label-custom">Type</label>
+
+                    <select id="TYPE" name="TYPE"
+                            class="form-input-custom check-empty">
+                        <option value="">Select Type</option>
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="EXECUTIVE">EXECUTIVE</option>
+                        <option value="MARKETING">MARKETING</option>
+                    </select>
+                </div>
+
+                <input type="hidden" id="STATUS" name="STATUS" value="ACTIVE" />
+            </div>
+
+            <div class="save-btn-row">
+                <button type="submit"
+                        id="SAVE"
+                        class="save-btn-custom">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <table class="user-table">
+
+        <thead>
+            <tr>
+                <th>Edit</th>
+                <th>Login ID</th>
+                <th>Name</th>
+                <th>Password</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var u in Model)
+            {
+                <tr id="row_@u.LOGINID">
+
+                    <td>
+
+                        <span id="editBtn_@u.LOGINID">
+
+                            <img src="~/images/edit.png"
+                                 onclick="editRow('@u.LOGINID')"
+                                 class="action-icon" />
+
+                        </span>
+
+                        <span id="editActions_@u.LOGINID"
+                              style="display:none;">
+
+                            <img src="~/images/update.png"
+                                 onclick="updateRow('@u.LOGINID')"
+                                 class="action-icon" />
+
+                            <img src="~/images/cancel.png"
+                                 onclick="cancelEdit()"
+                                 class="action-icon"
+                                 style="margin-left:5px;" />
+                        </span>
+
+                    </td>
+
+                    <td>
+                        <span id="loginid_@u.LOGINID">@u.LOGINID</span>
+
+                        <input type="text"
+                               id="edit_loginid_@u.LOGINID"
+                               value="@u.LOGINID"
+                               class="inline-edit-box" />
+                    </td>
+
+                    <td>
+                        <span id="name_@u.LOGINID">@u.NAME</span>
+
+                        <input type="text"
+                               id="edit_name_@u.LOGINID"
+                               value="@u.NAME"
+                               class="inline-edit-box" />
+                    </td>
+
+                    <td>
+                        <span id="psw_@u.LOGINID">@u.PSW</span>
+
+                        <input type="text"
+                               id="edit_psw_@u.LOGINID"
+                               value="@u.PSW"
+                               class="inline-edit-box" />
+                    </td>
+
+                    <td>
+
+                        <span id="type_@u.LOGINID">@u.TYPE</span>
+
+                        <select id="edit_type_@u.LOGINID"
+                                class="inline-edit-box">
+                            <option value="ADMIN"
+                                    selected="@(u.TYPE == "ADMIN")">
+                                ADMIN
+                            </option>
+
+                            <option value="EXECUTIVE"
+                                    selected="@(u.TYPE == "EXECUTIVE")">
+                                EXECUTIVE
+                            </option>
+
+                            <option value="MARKETING"
+                                    selected="@(u.TYPE == "MARKETING")">
+                                MARKETING
+                            </option>
+
+                        </select>
+
+                    </td>
+
+                    <td>
+
+                        <span id="status_@u.LOGINID">@u.STATUS</span>
+
+                        <select id="edit_status_@u.LOGINID"
+                                class="inline-edit-box">
+
+                            @if (u.STATUS == "ACTIVE")
+                            {
+                                <option value="ACTIVE" selected>ACTIVE</option>
+                                <option value="INACTIVE">INACTIVE</option>
+                            }
+                            else
+                            {
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="INACTIVE" selected>INACTIVE</option>
+                            }
+
+                        </select>
+
+                    </td>
+
+                    <td>
+                        @Convert.ToDateTime(u.REGDDATE).ToString("dd/MM/yyyy")
+                    </td>
+
+                    <td>
+
+                        <a asp-action="Delete"
+                               asp-route-id="@u.LOGINID"
+                               onclick="return confirm('Are you sure?')">
+
+                            <img src="~/images/delete.png"
+                                 class="action-icon" />
+
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+
+        if (successMessage && successMessage !== '') {
+            alert(successMessage);
+        }
+
+        if (errorMessage && errorMessage !== '') {
+            alert(errorMessage);
+        }
+    });
+
+    function editRow(id) {
+
+        document.getElementById("editBtn_" + id).style.display = "none";
+        document.getElementById("editActions_" + id).style.display = "inline";
+
+        document.getElementById("loginid_" + id).style.display = "none";
+        document.getElementById("name_" + id).style.display = "none";
+        document.getElementById("psw_" + id).style.display = "none";
+        document.getElementById("type_" + id).style.display = "none";
+        document.getElementById("status_" + id).style.display = "none";
+
+        document.getElementById("edit_loginid_" + id).style.display = "inline-block";
+        document.getElementById("edit_name_" + id).style.display = "inline-block";
+        document.getElementById("edit_psw_" + id).style.display = "inline-block";
+        document.getElementById("edit_type_" + id).style.display = "inline-block";
+        document.getElementById("edit_status_" + id).style.display = "inline-block";
+    }
+
+    function cancelEdit() {
+        location.reload();
+    }
+
+    function updateRow(oldId) {
+
+        var loginid = document.getElementById("edit_loginid_" + oldId).value;
+        var name = document.getElementById("edit_name_" + oldId).value;
+        var psw = document.getElementById("edit_psw_" + oldId).value;
+        var type = document.getElementById("edit_type_" + oldId).value;
+        var status = document.getElementById("edit_status_" + oldId).value;
+
+        fetch('/User/UpdateInline', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                OLDLOGINID: oldId,
+                LOGINID: loginid,
+                NAME: name,
+                PSW: psw,
+                TYPE: type,
+                STATUS: status
+            })
+
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.success) {
+
+                alert("User updated successfully!");
+                location.reload();
+
+            } else {
+
+                alert(data.message || "Update failed");
+            }
+
+        })
+        .catch(error => {
+
+            alert("Error: " + error);
+
+        });
+    }
+
+</script>

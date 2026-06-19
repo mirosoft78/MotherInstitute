@@ -1,0 +1,452 @@
+﻿@model MotherInstitute.Models.StudentRegd
+
+@{
+    ViewData["Title"] = "Edit Student Registration";
+
+    var studentIdValue = !string.IsNullOrWhiteSpace(Model?.STUDENTID)
+        ? Model.STUDENTID
+        : Context.Request.Query["studentId"].ToString();
+}
+
+<div class="main-content-box">
+
+    <style>
+
+            .main-content-box {
+                overflow: visible !important;
+                position: relative;
+                z-index: 1;
+            }
+
+            .page-header {
+                padding: 8px 16px;
+                border-radius: 10px;
+                background: linear-gradient(90deg, #0b5ed7, #1ec8ff);
+                margin-bottom: 12px;
+            }
+
+                .page-header h2 {
+                    margin: 0;
+                    font-size: 22px;
+                    color: white;
+                    text-align: center;
+                    font-weight: 700;
+                }
+
+            .student-form-row {
+                display: flex;
+                align-items: end;
+                gap: 10px;
+                margin-bottom: 14px;
+                flex-wrap: wrap;
+                overflow: visible !important;
+                padding-left: 6px;
+            }
+
+            .student-form-row {
+                display: flex;
+                align-items: end;
+                gap: 10px;
+                margin-bottom: 14px;
+                flex-wrap: wrap;
+                overflow: visible !important;
+            }
+
+            .student-form-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+                .student-form-group label {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #374151;
+                    margin-bottom: 5px;
+                }
+
+            .student-search-wrapper {
+                position: relative;
+                overflow: visible !important;
+                z-index: 99999;
+            }
+
+            .student-search-box {
+                width: 240px;
+                height: 30px;
+                padding: 4px 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 5px;
+                font-size: 12px;
+                outline: none;
+                background: white;
+            }
+
+            .student-dropdown {
+                position: fixed;
+                top: 235px;
+                left: 30px;
+                width: 240px;
+                background: white;
+                border-radius: 6px;
+                border: 1px solid #d1d5db;
+                max-height: 220px;
+                overflow-y: auto;
+                z-index: 999999;
+                display: none;
+                margin-top: 4px;
+                box-shadow: 0 6px 12px rgba(0,0,0,.12);
+            }
+
+            .student-option {
+                padding: 8px 10px;
+                font-size: 12px;
+                cursor: pointer;
+                border-bottom: 1px solid #f1f1f1;
+                background: white;
+            }
+
+                .student-option:hover {
+                    background: #eff6ff;
+                }
+
+            .btn-view {
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 5px 16px;
+                border-radius: 5px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                height: 30px;
+            }
+
+                .btn-view:hover {
+                    background: #1d4ed8;
+                }
+
+            .details-grid {
+                display: grid;
+                grid-template-columns: repeat(2,1fr);
+                gap: 12px;
+                margin-top: 12px;
+            }
+
+            .form-group label {
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                margin-bottom: 4px;
+                color: #374151;
+            }
+
+            .form-control {
+                width: 100%;
+                height: 30px;
+                border-radius: 5px;
+                border: 1px solid #d1d5db;
+                padding: 4px 10px;
+                font-size: 12px;
+            }
+
+            .btn-update {
+                background: green;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                padding: 5px 16px;
+                font-size: 12px;
+                font-weight: 600;
+                margin-top: 14px;
+                cursor: pointer;
+                height: 30px;
+            }
+
+            .sidebar,
+            .side-menu,
+            .navigation-menu {
+                overflow: visible !important;
+            }
+            .view-btn{
+    height:38px;
+    padding:0 25px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:600;
+}
+
+@@media(max-width:768px){
+
+    .student-search-wrapper{
+        display:block !important;
+    }
+
+    .view-btn{
+        width:100%;
+        margin-top:10px;
+    }
+
+    .student-search-box{
+        width:100% !important;
+    }
+}
+
+    </style>
+
+    <div class="page-header">
+        <h2>Edit Students Registration</h2>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <p style="color:green;font-weight:bold;margin-bottom:10px;font-size:12px;">
+            @TempData["Message"]
+        </p>
+    }
+
+    @if (ViewBag.Message != null)
+    {
+        <p style="color:red;font-weight:bold;margin-bottom:10px;font-size:12px;">
+            @ViewBag.Message
+        </p>
+    }
+
+    <!-- SEARCH FORM -->
+
+    <form method="post"
+          asp-controller="ViewStudentsRegistration"
+          asp-action="EditStudentRegistration">
+
+        <div class="student-form-row">
+
+            <div class="student-search-wrapper"
+                 style="
+                display:flex;
+                align-items:center;
+                gap:10px;">
+
+                <label style="
+                    width:100px;
+                    font-size:12px;
+                    font-weight:600;
+                    margin-bottom:0;
+                    color:#374151;">
+
+                    Student ID
+
+                </label>
+
+                <div style="
+                    position:relative;
+                    width:240px;">
+
+                    <input type="text"
+                           id="studentId"
+                           name="studentId"
+                           value="@studentIdValue"
+                           autocomplete="off"
+                           placeholder="Enter Student ID"
+                           class="student-search-box"
+                           style="
+                    width:100%;
+                    height:38px;
+                    border-radius:6px;
+                    font-size:12px;" />
+
+                    <div id="studentDropdown"
+                         class="student-dropdown"
+                         style="
+                        position:absolute;
+                        top:42px;
+                        left:0;
+                        width:100%;
+                        z-index:99999;">
+
+                        @if (ViewBag.StudentIds != null)
+                        {
+                            foreach (var item in ViewBag.StudentIds)
+                            {
+                                <div class="student-option"
+                                     data-value="@item">
+
+                                    @item
+
+                                </div>
+                            }
+                        }
+
+                    </div>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary view-btn">
+                    View
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    <!-- STUDENT DETAILS -->
+    @if (Model != null)
+    {
+        <form method="post">
+
+            <input type="hidden"
+                   asp-for="STUDENTID" />
+
+            <div class="details-grid">
+
+                <div class="form-group">
+
+                    <label>Name</label>
+
+                    <input type="text"
+                           asp-for="NAME"
+                           class="form-control" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Father Name</label>
+
+                    <input type="text"
+                           asp-for="FNAME"
+                           class="form-control" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Mobile 1</label>
+
+                    <input type="text"
+                           asp-for="MOB1"
+                           class="form-control" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Mobile 2</label>
+
+                    <input type="text"
+                           asp-for="MOB2"
+                           class="form-control" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Session</label>
+
+                    <input type="text"
+                           asp-for="SESSION"
+                           class="form-control" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Course</label>
+
+                    <input type="text"
+                           asp-for="COURSE"
+                           class="form-control" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>DOB</label>
+
+                    <input type="text"
+                           asp-for="DOB"
+                           class="form-control" />
+
+                </div>
+
+            </div>
+
+            <button type="submit"
+                    class="btn-update">
+
+                Update
+
+            </button>
+
+        </form>
+    }
+
+</div>
+
+<script>
+
+    const studentInput = document.getElementById("studentId");
+    const dropdown = document.getElementById("studentDropdown");
+    const options = document.querySelectorAll(".student-option");
+
+    studentInput.addEventListener("keyup", function () {
+
+        let value = this.value.toLowerCase();
+
+        if (value === "") {
+
+            dropdown.style.display = "none";
+            return;
+        }
+
+        dropdown.style.display = "block";
+
+        let hasVisible = false;
+
+        options.forEach(option => {
+
+            const text = option.getAttribute("data-value").toLowerCase();
+
+            if (text.includes(value)) {
+
+                option.style.display = "block";
+                hasVisible = true;
+            }
+            else {
+
+                option.style.display = "none";
+            }
+
+        });
+
+        if (!hasVisible) {
+
+            dropdown.style.display = "none";
+        }
+
+    });
+
+    options.forEach(option => {
+
+        option.addEventListener("click", function () {
+
+            studentInput.value = this.getAttribute("data-value");
+
+            dropdown.style.display = "none";
+
+        });
+
+    });
+
+    document.addEventListener("click", function (e) {
+
+        if (!studentInput.contains(e.target) &&
+            !dropdown.contains(e.target)) {
+
+            dropdown.style.display = "none";
+        }
+
+    });
+
+</script>

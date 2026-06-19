@@ -1,0 +1,558 @@
+﻿@model List<MotherInstitute.Models.BedDetails>
+
+<div class="main-content-box">
+
+    <style>
+
+            .page-header {
+                padding: 8px 16px;
+                border-radius: 10px;
+                background: linear-gradient(90deg, #0b5ed7, #1ec8ff);
+                margin-bottom: 10px;
+            }
+
+                .page-header h2 {
+                    margin: 0;
+                    font-size: 22px;
+                    color: white;
+                    text-align: center;
+                    font-weight: 700;
+                }
+
+            .page-form-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 12px;
+                flex-wrap: wrap;
+            }
+
+                .page-form-row input[type="text"] {
+                    width: 180px;
+                    height: 30px;
+                    padding: 4px 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 5px;
+                    font-size: 12px;
+                    outline: none;
+                }
+
+                .page-form-row button {
+                    background: #2563eb;
+                    color: white;
+                    border: none;
+                    padding: 5px 16px;
+                    border-radius: 5px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    height: 30px;
+                }
+
+                    .page-form-row button:hover {
+                        background: #1d4ed8;
+                    }
+
+            .empty-field-warning {
+                border: 1px solid red !important;
+                box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.18) !important;
+            }
+
+            .bed-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 6px;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+                .bed-table thead tr {
+                    background: #1e40af;
+                }
+
+                .bed-table th {
+                    color: white;
+                    padding: 6px 8px;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    height: 30px;
+                    border-right: 1px solid rgba(255,255,255,0.10);
+                    white-space: nowrap;
+                }
+
+                .bed-table td {
+                    padding: 5px 8px;
+                    border-bottom: 1px solid #e5e7eb;
+                    vertical-align: middle;
+                    font-size: 12px;
+                    text-align: center;
+                    height: 32px;
+                    line-height: 1.1;
+                    white-space: nowrap;
+                }
+
+                .bed-table tbody tr:nth-child(even) {
+                    background: #fafafa;
+                }
+
+                .bed-table tbody tr:hover {
+                    background: #edf4ff;
+                }
+
+            .action-icon {
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+            }
+
+            .inline-edit-box {
+                width: 100%;
+                height: 24px;
+                padding: 2px 5px;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
+                font-size: 11px;
+            }
+
+            #bedNoMessage {
+                color: red;
+                font-size: 11px;
+                font-weight: 600;
+            }
+    </style>
+
+    <div class="page-header">
+        <h2>Manage Bed Details</h2>
+    </div>
+
+    <form asp-action="Create"
+          method="post"
+          class="page-form-row"
+          id="bedForm">
+
+        <div style="display:flex; flex-direction:column;">
+
+            <input type="text"
+                   id="bedNoInput"
+                   name="BEDNO"
+                   placeholder="Bed No"
+                   oninput="validateBedNo(this)" />
+
+            <span id="bedNoError"
+                  class="text-danger"
+                  style="font-size:12px; margin-top:4px;">
+            </span>
+
+        </div>
+
+        <div style="display:flex; flex-direction:column;">
+
+            <input type="text"
+                   id="buildingInput"
+                   name="BUILDING"
+                   placeholder="Building"
+                   oninput="validateBuilding(this)" />
+
+            <span id="buildingError"
+                  class="text-danger"
+                  style="font-size:12px; margin-top:4px;">
+            </span>
+
+        </div>
+
+        <div style="display:flex; flex-direction:column;">
+
+            <input type="text"
+                   id="floorInput"
+                   name="FLOOR"
+                   placeholder="Floor"
+                   oninput="validateFloor(this)" />
+
+            <span id="floorError"
+                  class="text-danger"
+                  style="font-size:12px; margin-top:4px;">
+            </span>
+
+        </div>
+        <div style="display:flex; flex-direction:column;">
+
+            <input type="text"
+                   id="roomInput"
+                   name="ROOM"
+                   placeholder="Room"
+                   oninput="validateRoom(this)" />
+
+            <span id="roomError"
+                  class="text-danger"
+                  style="font-size:12px; margin-top:4px;">
+            </span>
+
+        </div>
+
+        <button type="submit">
+            Add
+        </button>
+
+        <span id="bedNoMessage"></span>
+
+    </form>
+
+    <table class="bed-table">
+
+        <thead>
+
+            <tr>
+                <th>Edit</th>
+                <th>Bed No</th>
+                <th>Building</th>
+                <th>Floor</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Delete</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td style="white-space:nowrap;">
+
+                        <img src="~/images/edit.png"
+                             onclick="editRow(this)"
+                             class="action-icon" />
+
+                        <img src="~/images/update.png"
+                             onclick="updateRow(this, '@item.SLNO')"
+                             class="action-icon"
+                             style="display:none;" />
+
+                        <img src="~/images/cancel.png"
+                             onclick="cancelEdit(this)"
+                             class="action-icon"
+                             style="display:none; margin-left:4px;" />
+
+                    </td>
+
+                    <td>
+
+                        <span>@item.BEDNO</span>
+
+                        <input type="text"
+                               value="@item.BEDNO"
+                               readonly
+                               class="inline-edit-box"
+                               style="display:none; background:#f1f5f9; cursor:not-allowed;" />
+
+                    </td>
+
+                    <td>
+
+                        <span>@item.BUILDING</span>
+
+                        <input type="text"
+                               value="@item.BUILDING"
+                               class="inline-edit-box"
+                               style="display:none;" />
+
+                    </td>
+
+                    <td>
+
+                        <span>@item.FLOOR</span>
+
+                        <input type="text"
+                               value="@item.FLOOR"
+                               class="inline-edit-box"
+                               style="display:none;" />
+
+                    </td>
+
+                    <td>
+
+                        <span>@item.ROOM</span>
+
+                        <input type="text"
+                               value="@item.ROOM"
+                               class="inline-edit-box"
+                               style="display:none;"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
+
+                    </td>
+
+                    <td>
+
+                        <span>@item.STATUS</span>
+
+                        <input type="text"
+                               value="@item.STATUS"
+                               class="inline-edit-box"
+                               style="display:none;" />
+
+                    </td>
+
+                    <td>
+
+                        <form asp-action="Delete"
+                              asp-route-id="@item.SLNO"
+                              method="post"
+                              style="display:inline;"
+                              onsubmit="return confirm('Are you sure you want to delete this bed?');">
+
+                            <button type="submit"
+                                    style="border:none; background:none;">
+
+                                <img src="~/images/delete.png"
+                                     class="action-icon" />
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+
+        if (successMessage && successMessage !== '') {
+            alert(successMessage);
+        }
+
+        if (errorMessage && errorMessage !== '') {
+            alert(errorMessage);
+        }
+
+        var bedInput = document.getElementById("bedNoInput");
+        var message = document.getElementById("bedNoMessage");
+
+        bedInput.addEventListener("keyup", function () {
+
+            var bedNo = bedInput.value;
+
+            if (bedNo.trim() === "") {
+                message.innerText = "";
+                return;
+            }
+
+            fetch('/BedDetails/CheckBedNo?bedNo=' + encodeURIComponent(bedNo))
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (data === true) {
+                        message.innerText = "This bed number already exists.";
+                    }
+                    else {
+                        message.innerText = "";
+                    }
+
+                });
+
+        });
+
+        var form = document.getElementById("bedForm");
+
+        form.addEventListener("submit", function (e) {
+
+            let inputs = form.querySelectorAll("input[type='text']");
+            let hasEmpty = false;
+
+            inputs.forEach(input => {
+
+                input.classList.remove("empty-field-warning");
+
+                if (input.value.trim() === "") {
+
+                    hasEmpty = true;
+
+                    input.classList.add("empty-field-warning");
+                }
+
+            });
+
+            if (hasEmpty) {
+
+                if (!confirm("Some fields are empty. Continue?")) {
+
+                    e.preventDefault();
+                }
+            }
+
+        });
+
+    });
+        function validateBedNo(input) {
+
+        var error = document.getElementById("bedNoError");
+
+        var originalValue = input.value;
+
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        if (originalValue !== input.value) {
+
+            error.innerHTML = "Only numbers are allowed.";
+
+        } else {
+
+            error.innerHTML = "";
+        }
+    }
+
+    function validateRoom(input) {
+
+        var error = document.getElementById("roomError");
+
+        var originalValue = input.value;
+
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        if (originalValue !== input.value) {
+
+            error.innerHTML = "Only numbers are allowed.";
+
+        } else {
+
+            error.innerHTML = "";
+        }
+    }
+        function validateBuilding(input) {
+
+        var error = document.getElementById("buildingError");
+
+        var originalValue = input.value;
+
+        input.value = input.value.replace(/[^A-Za-z0-9\s]/g, '');
+
+        if (originalValue !== input.value) {
+
+            error.innerHTML = "Only letters and numbers are allowed.";
+
+        } else {
+
+            error.innerHTML = "";
+        }
+    }
+
+    function validateFloor(input) {
+
+        var error = document.getElementById("floorError");
+
+        var originalValue = input.value;
+
+        input.value = input.value.replace(/[^A-Za-z0-9\s]/g, '');
+
+        if (originalValue !== input.value) {
+
+            error.innerHTML = "Only letters and numbers are allowed.";
+
+        } else {
+
+            error.innerHTML = "";
+        }
+    }
+
+    function editRow(btn) {
+
+        let row = btn.closest("tr");
+
+        btn.style.display = "none";
+
+        row.children[0].children[1].style.display = "inline";
+        row.children[0].children[2].style.display = "inline";
+
+        for (let i = 1; i <= 5; i++) {
+
+            let span = row.children[i].children[0];
+            let input = row.children[i].children[1];
+
+            span.style.display = "none";
+            input.style.display = "inline-block";
+        }
+    }
+
+    function cancelEdit(btn) {
+
+        let row = btn.closest("tr");
+
+        row.children[0].children[0].style.display = "inline";
+        row.children[0].children[1].style.display = "none";
+        row.children[0].children[2].style.display = "none";
+
+        for (let i = 1; i <= 5; i++) {
+
+            let span = row.children[i].children[0];
+            let input = row.children[i].children[1];
+
+            input.value = span.innerText;
+
+            span.style.display = "inline";
+            input.style.display = "none";
+        }
+    }
+
+    function updateRow(btn, id) {
+
+        let row = btn.closest("tr");
+
+        let data = {
+
+            SLNO: id,
+            BEDNO: row.children[1].children[1].value,
+            BUILDING: row.children[2].children[1].value,
+            FLOOR: row.children[3].children[1].value,
+            ROOM: row.children[4].children[1].value,
+            STATUS: row.children[5].children[1].value
+        };
+
+        fetch('/BedDetails/UpdateInline', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(data)
+
+        })
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            if (data.success) {
+
+                alert(data.message || "Updated successfully!");
+
+                location.reload();
+
+            } else {
+
+                alert(data.message || "Update failed");
+            }
+
+        });
+
+    }
+
+</script>

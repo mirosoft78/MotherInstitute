@@ -1,0 +1,1451 @@
+﻿@model MotherInstitute.Models.RegistrationPageViewModel
+
+@{
+    ViewData["Title"] = "Student Registration";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div style="background:#d4edda;color:#155724;padding:12px;border-radius:8px;margin-bottom:15px;">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div style="background:#f8d7da;color:#721c24;padding:12px;border-radius:8px;margin-bottom:15px;">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<style>
+    .registration-wrapper {
+        max-width: 1350px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 0px;
+        border: 2px solid red;
+        border-radius: 18px;
+    }
+
+    .registration-banner {
+        background: linear-gradient(90deg, #0d6efd, #17c1ff);
+        color: white;
+        text-align: center;
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+
+        .registration-banner h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .registration-banner p {
+            margin: 6px 0 0 0;
+            font-size: 16px;
+        }
+
+    .tab-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+    .tab-btn {
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        background: #eef2f3;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+        .tab-btn.active {
+            background: #0d6efd;
+            color: white;
+        }
+
+    .tab-pane {
+        display: none;
+    }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+    .section-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #0d6efd;
+        border-bottom: 3px solid #0d6efd;
+        padding-bottom: 8px;
+        margin-bottom: 18px;
+    }
+
+    .section-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 24px;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .nice-label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 8px;
+        font-size: 15px;
+        color: #2c3e50;
+    }
+
+    .nice-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #dbe3ea;
+        border-radius: 14px;
+        font-size: 16px;
+        box-sizing: border-box;
+        background: white;
+    }
+    select.nice-input {
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    cursor: pointer;
+}
+
+    .blue-btn {
+        border: none;
+        background: #0d6efd;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .gray-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        border-radius: 12px;
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        margin-left: 10px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .text-danger {
+        color: red;
+        font-size: 13px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .input-validation-error {
+        border: 2px solid red !important;
+        background-color: #fff5f5 !important;
+    }
+
+    .field-validation-error {
+        color: red;
+        font-size: 13px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background: #f2f6ff;
+        }
+
+    .personal-layout {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 30px;
+        align-items: start;
+    }
+
+    .photo-card {
+        border: 1px solid #ddd;
+        border-radius: 16px;
+        background: #f5f5f5;
+        overflow: hidden;
+    }
+
+    .photo-card-header {
+        padding: 14px 18px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f2937;
+        border-bottom: 1px solid #ddd;
+        background: #efefef;
+    }
+
+    .photo-card-body {
+        padding: 20px;
+    }
+
+    .photo-preview-box {
+        height: 220px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #ececec;
+        overflow: hidden;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+        .photo-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+    .photo-placeholder {
+        text-align: center;
+        color: #6b7280;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .photo-placeholder-icon {
+        font-size: 68px;
+        line-height: 1;
+    }
+
+    .photo-upload-btn {
+        width: 100%;
+        background: #0d6efd;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 12px;
+    }
+
+        .photo-upload-btn:hover {
+            background: #0b5ed7;
+        }
+
+    .file-name-box {
+        width: 100%;
+        background: #e9ecef;
+        border-radius: 8px;
+        padding: 14px 10px;
+        text-align: center;
+        color: #6b7280;
+        font-size: 14px;
+        word-break: break-all;
+    }
+
+    .personal-fields {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px 22px;
+    }
+
+    .simple-card {
+        background: #fafcff;
+        border: 1px solid #e6edf7;
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .inline-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 28px;
+    }
+
+    .inline-field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .inline-field label {
+            width: 150px;
+            min-width: 150px;
+            margin: 0;
+            font-weight: 700;
+            font-size: 15px;
+            color: #2c3e50;
+        }
+
+        .inline-field .field-box {
+            flex: 1;
+        }
+
+            .inline-field .field-box .nice-input {
+                margin: 0;
+            }
+
+    .icon-action-cell {
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .icon-btn-link,
+    .icon-btn-submit {
+        border: none;
+        background: none;
+        padding: 0;
+        margin: 0 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .action-icon-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    @@media (max-width: 1100px) {
+        .personal-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .personal-fields {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .section-grid,
+        .inline-form-grid,
+        .personal-fields {
+            grid-template-columns: 1fr;
+        }
+
+        .inline-field {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+            .inline-field label {
+                width: 100%;
+                min-width: 100%;
+                margin-bottom: 6px;
+            }
+
+        .registration-banner h1 {
+            font-size: 32px;
+        }
+    }
+</style>
+
+<div class="registration-wrapper">
+    <div class="registration-banner">
+        <h1>Student Registration</h1>
+    </div>
+
+    <div class="tab-buttons">
+        <button type="button" class="tab-btn @(Model.ActiveTab == "personal" ? "active" : "")" onclick="showTab('personal', this)">Personal</button>
+        <button type="button" class="tab-btn @(Model.ActiveTab == "college" ? "active" : "")" onclick="showTab('college', this)">College</button>
+        <button type="button" class="tab-btn @(Model.ActiveTab == "visitors" ? "active" : "")" onclick="showTab('visitors', this)">Visitors</button>
+        <button type="button" class="tab-btn @(Model.ActiveTab == "subjects" ? "active" : "")" onclick="showTab('subjects', this)">Subjects</button>
+        <button type="button" class="tab-btn @(Model.ActiveTab == "fees" ? "active" : "")" onclick="showTab('fees', this)">Fees</button>
+        <button type="button" class="tab-btn @(Model.ActiveTab == "installments" ? "active" : "")" onclick="showTab('installments', this)">Installments</button>
+    </div>
+
+    <!-- PERSONAL -->
+    <div id="personal" class="tab-pane @(Model.ActiveTab == "personal" ? "active" : "")">
+        <div class="section-title">Personal</div>
+
+        <form asp-action="@(string.IsNullOrWhiteSpace(Model.Student.STUDENTID) ? "RegisterPersonal" : "UpdatePersonal")" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Student.STUDENTID" />
+
+            <div class="personal-layout">
+                <div class="photo-card">
+                    <div class="photo-card-header">📷 Student Photo</div>
+
+                    <div class="photo-card-body">
+                        <div class="photo-preview-box">
+                            @if (!string.IsNullOrWhiteSpace(Model.Student.IMAGE))
+                            {
+                                <img id="previewImage"
+                                     src="~/studentphotos/@Model.Student.IMAGE"
+                                     alt="Student Photo"
+                                     style="display:block;" />
+                                <div id="photoPlaceholder" class="photo-placeholder" style="display:none;">
+                                    <div class="photo-placeholder-icon">👤</div>
+                                    <div>No photo uploaded</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <img id="previewImage" alt="Student Photo" />
+                                <div id="photoPlaceholder" class="photo-placeholder">
+                                    <div class="photo-placeholder-icon">👤</div>
+                                    <div>No photo uploaded</div>
+                                </div>
+                            }
+                        </div>
+
+                        <input type="file"
+                               id="photoInput"
+                               name="StudentPhoto"
+                               accept="image/*"
+                               onchange="previewPhoto(event)"
+                               hidden />
+
+                        <button type="button"
+                                class="photo-upload-btn"
+                                onclick="document.getElementById('photoInput').click();">
+                            ⬆ Upload Photo
+                        </button>
+
+                        <div id="fileNameBox" class="file-name-box">
+                            @(string.IsNullOrWhiteSpace(Model.Student.IMAGE) ? "No file selected" : Model.Student.IMAGE)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inline-form-grid">
+                    <div class="inline-field">
+                        <label>Student Name <span style="color:red">*</span></label>
+                        <div class="field-box">
+                            <input asp-for="Student.NAME"
+                                   id="REG_NAME"
+                                   class="nice-input"
+                                   oninput="validateStudentName(this)" />
+                             <span asp-validation-for="Student.NAME"
+                                   class="text-danger"
+                                   id="nameError"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Father Name <span style="color:red">*</span></label>
+                        <div class="field-box">
+                            <input asp-for="Student.FNAME" id="REG_FNAME" class="nice-input"oninput="validateFatherName(this)"/>
+                            <span asp-validation-for="Student.FNAME" class="text-danger"id="fatherNameError"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Mother Name <span style="color:red">*</span></label>
+                        <div class="field-box">
+                            <input asp-for="Student.MNAME" id="REG_MNAME" class="nice-input"oninput="validateMotherName(this)" />
+                            <span asp-validation-for="Student.MNAME" class="text-danger"id="motherNameError"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Date of Birth</label>
+                        <div class="field-box">
+                            <input asp-for="Student.DOB" id="REG_DOB" type="date" class="nice-input" />
+                            <span asp-validation-for="Student.DOB" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Mobile 1 <span style="color:red">*</span></label>
+                        <div class="field-box">
+                            <input asp-for="Student.MOB1" id="REG_MOB1" class="nice-input"maxlength="10" oninput="validateMobile1(this)" />
+                            <span asp-validation-for="Student.MOB1" id="mob1Error" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Address <span style="color:red">*</span></label>
+                        <div class="field-box">
+                            <textarea asp-for="Student.ADDRESS" id="REG_ADDRESS" class="nice-input" style="height:100px;"></textarea>
+                            <span asp-validation-for="Student.ADDRESS" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Aadhar No <span style="color:red">*</span></label>
+                        <div class="field-box">
+                            <input asp-for="Student.AADHARNO" id="REG_AADHAR" class="nice-input"maxlength="12"oninput="validateAadhar(this)" />
+                            <span asp-validation-for="Student.AADHARNO"id="aadharError" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Mobile 2 <span style="color:red">*</span></label>
+                        <div class="field-box">
+                            <input asp-for="Student.MOB2" id="REG_MOB2" class="nice-input"maxlength="10"oninput="validateMobile2(this)" />
+                            <span asp-validation-for="Student.MOB2"id="mob2Error" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Blood Group</label>
+                        <div class="field-box">
+
+                            <select asp-for="Student.BLOODGROUP"
+                                    id="REG_BLOOD"
+                                    class="nice-input">
+
+                                <option value="">-- Select Blood Group --</option>
+
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+
+                            </select>
+
+                            <span asp-validation-for="Student.BLOODGROUP" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Session</label>
+                        <div class="field-box">
+                            <select asp-for="Student.SESSION" id="REG_SESSION" asp-items="Model.SessionList" class="nice-input">
+                                <option value="">-- Select Session --</option>
+                            </select>
+                            <span asp-validation-for="Student.SESSION" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Course</label>
+                        <div class="field-box">
+                            <select asp-for="Student.COURSE" id="REG_COURSE" asp-items="Model.CourseList" class="nice-input">
+                                <option value="">-- Select Course --</option>
+                            </select>
+                            <span asp-validation-for="Student.COURSE" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Gender</label>
+                        <div class="field-box">
+
+                            <select asp-for="Student.GENDER"
+                                    id="REG_GENDER"
+                                    class="nice-input">
+
+                                <option value="">-- Select Gender --</option>
+
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+
+                            </select>
+
+                            <span asp-validation-for="Student.GENDER" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Caste</label>
+                        <div class="field-box">
+
+                            <select asp-for="Student.CASTE"
+                                    id="REG_CASTE"
+                                    class="nice-input">
+
+                                <option value="">-- Select Caste --</option>
+
+                                <option value="General">General</option>
+                                <option value="OBC">OBC</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                                <option value="EWS">EWS</option>
+
+                            </select>
+
+                            <span asp-validation-for="Student.CASTE" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Date of Regd</label>
+                        <div class="field-box">
+                            <input asp-for="Student.DOR" id="REG_DOR" type="date" class="nice-input" />
+                            <span asp-validation-for="Student.DOR" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Bed No</label>
+                        <div class="field-box">
+                            <input asp-for="Student.BEDNO" id="REG_BEDNO" class="nice-input"oninput="validateBedNo(this)" />
+                            <span asp-validation-for="Student.BEDNO"id="bedNoError" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Current Year</label>
+                        <div class="field-box">
+                            <input asp-for="Student.CURRYR" id="REG_YEAR" class="nice-input"oninput="validateCurrentYear(this)" />
+                            <span asp-validation-for="Student.CURRYR"id="currentYearError" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:24px;">
+                <button type="submit" id="REG_SUBMIT" class="blue-btn">
+                    @(string.IsNullOrWhiteSpace(Model.Student.STUDENTID) ? "Register Student" : "Update Personal")
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- COLLEGE -->
+    <div id="college" class="tab-pane @(Model.ActiveTab == "college" ? "active" : "")">
+        <div class="section-title">College</div>
+
+        <form asp-action="SaveCollege" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Student.STUDENTID" />
+            <input type="hidden" name="STUDENTID" value="@Model.Student.STUDENTID" />
+
+            <div class="simple-card">
+                <div class="inline-form-grid">
+                    <div class="inline-field">
+                        <label>Board Name</label>
+                        <div class="field-box">
+                            <input asp-for="Student.BOARDNAME" class="nice-input" tabindex="1"oninput="validateBoardName(this)" />
+                            <span id="boardNameError" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>College Name</label>
+                        <div class="field-box">
+                            <input asp-for="Student.COLLEGENAME" class="nice-input" tabindex="3"oninput="validateCollegeName(this)" />
+                            <span id="collegeNameError" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>College Roll No</label>
+                        <div class="field-box">
+                            <input asp-for="Student.COLLEGEROLLNO" class="nice-input" tabindex="2"oninput="validateCollegeRollNo(this)" />
+                            <span id="collegeRollNoError" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:24px;">
+                    <button type="submit" class="blue-btn" tabindex="4">Save College</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- VISITORS -->
+    <div id="visitors" class="tab-pane @(Model.ActiveTab == "visitors" ? "active" : "")">
+        <div class="section-title">Visitors</div>
+
+        <div class="simple-card">
+            @if (Model.Visitor != null && Model.Visitor.SLNO > 0)
+            {
+                <form asp-action="UpdateVisitor" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Student.STUDENTID" />
+                    <input type="hidden" asp-for="Visitor.SLNO" />
+
+                    <div class="inline-form-grid">
+                        <div class="inline-field">
+                            <label>Visitor Name</label>
+                            <div class="field-box">
+                                <input asp-for="Visitor.NAME" class="nice-input" tabindex="1"oninput="validateVisitorName(this)" />
+                                <span id="visitorNameError" class="text-danger"></span>
+                               
+                            </div>
+                        </div>
+
+                        <div class="inline-field">
+                            <label>Mobile</label>
+                            <div class="field-box">
+                                
+                                <input asp-for="Visitor.MOBILE" class="nice-input" tabindex="3"maxlength="10"oninput="validateVisitorMobile(this)" />
+                                <span id="visitorMobileError" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="inline-field">
+                            <label>Relation</label>
+                            <div class="field-box">
+                                <input asp-for="Visitor.RELATION" class="nice-input" tabindex="2"oninput="validateRelation(this)" />
+                                <span id="relationError" class="text-danger"></span>
+                                
+                            </div>
+                        </div>
+
+                        <div class="inline-field">
+                            <label>Address</label>
+                            <div class="field-box">
+                                <input asp-for="Visitor.ADDRESS" class="nice-input" tabindex="4" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:24px;">
+                        <button type="submit" class="blue-btn" tabindex="5">Update Visitor</button>
+                        <a asp-action="Index"
+                           asp-route-activeTab="visitors"
+                           asp-route-studentId="@Model.Student.STUDENTID"
+                           class="gray-btn">Cancel</a>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <form asp-action="AddVisitor" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Student.STUDENTID" />
+
+                    <div class="inline-form-grid">
+                        <div class="inline-field">
+                            <label>Visitor Name</label>
+                            <div class="field-box">
+                                <input asp-for="Visitor.NAME" class="nice-input" tabindex="1"oninput="validateVisitorName(this)" />
+                                <span id="visitorNameError" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="inline-field">
+                            <label>Mobile</label>
+                            <div class="field-box">
+                                
+                                <input asp-for="Visitor.MOBILE" class="nice-input" tabindex="3"maxlength="10"oninput="validateVisitorMobile(this)" />
+                                <span id="visitorMobileError" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="inline-field">
+                            <label>Relation</label>
+                            <div class="field-box">
+                                <input asp-for="Visitor.RELATION" class="nice-input" tabindex="2"oninput="validateRelation(this)" />
+                                <span id="relationError" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="inline-field">
+                            <label>Address</label>
+                            <div class="field-box">
+                                <input asp-for="Visitor.ADDRESS" class="nice-input" tabindex="4" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:24px;">
+                        <button type="submit" class="blue-btn" tabindex="5">Add Visitor</button>
+                    </div>
+                </form>
+            }
+        </div>
+
+        @if (Model.VisitorRows != null && Model.VisitorRows.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Relation</th>
+                        <th>Address</th>
+                        <th style="width:120px;">Edit</th>
+                        <th style="width:120px;">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.VisitorRows)
+                    {
+                        <tr>
+                            <td>@item.NAME</td>
+                            <td>@item.MOBILE</td>
+                            <td>@item.RELATION</td>
+                            <td>@item.ADDRESS</td>
+                            <td class="icon-action-cell">
+                                <a asp-action="EditVisitor"
+                                       asp-route-slno="@item.SLNO"
+                                       asp-route-studentId="@Model.Student.STUDENTID"
+                                       class="icon-btn-link">
+                                    <img src="~/images/edit.png" class="action-icon-img" />
+                                </a>
+                            </td>
+                            <td class="icon-action-cell">
+                                <form asp-action="DeleteVisitor" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="slno" value="@item.SLNO" />
+                                    <input type="hidden" name="studentId" value="@Model.Student.STUDENTID" />
+                                    <button type="submit"
+                                            onclick="return confirm('Are you sure you want to delete this visitor?')"
+                                            class="icon-btn-submit">
+                                        <img src="~/images/delete.png" class="action-icon-img" />
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- SUBJECTS -->
+    <div id="subjects" class="tab-pane @(Model.ActiveTab == "subjects" ? "active" : "")">
+        <div class="section-title">Subjects</div>
+
+        <div class="simple-card">
+            @if (ViewBag.EditSubjectSlno != null)
+            {
+                <form asp-action="UpdateSubject" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Student.STUDENTID" />
+                    <input type="hidden" asp-for="Subject.SLNO" value="@ViewBag.EditSubjectSlno" />
+
+                    <div class="inline-form-grid" style="grid-template-columns:1fr;">
+                        <div class="inline-field">
+                            <label>Subject</label>
+                            <div class="field-box">
+                                <select asp-for="Subject.SUBJECT" asp-items="Model.SubjectList" class="nice-input">
+                                    <option value="">-- Select Subject --</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:24px;">
+                        <button type="submit" class="blue-btn">Update Subject</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <form asp-action="AddSubject" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Student.STUDENTID" />
+
+                    <div class="inline-form-grid" style="grid-template-columns:1fr;">
+                        <div class="inline-field">
+                            <label>Subject</label>
+                            <div class="field-box">
+                                <select asp-for="Subject.SUBJECT" asp-items="Model.SubjectList" class="nice-input">
+                                    <option value="">-- Select Subject --</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:24px;">
+                        <button type="submit" class="blue-btn">Add</button>
+                    </div>
+                </form>
+            }
+        </div>
+
+        @if (Model.SubjectRows != null && Model.SubjectRows.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th style="width:120px;">Edit</th>
+                        <th style="width:120px;">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SubjectRows)
+                    {
+                        <tr>
+                            <td>@item.SUBJECT</td>
+                            <td class="icon-action-cell">
+                                <a asp-action="EditSubject"
+                                   asp-route-slno="@item.SLNO"
+                                   asp-route-studentId="@Model.Student.STUDENTID"
+                                   class="icon-btn-link">
+                                    <img src="~/images/edit.png" class="action-icon-img" />
+                                </a>
+                            </td>
+                            <td class="icon-action-cell">
+                                <form asp-action="DeleteSubject" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="slno" value="@item.SLNO" />
+                                    <input type="hidden" name="studentId" value="@Model.Student.STUDENTID" />
+                                    <button type="submit"
+                                            onclick="return confirm('Are you sure you want to delete this subject?')"
+                                            class="icon-btn-submit">
+                                        <img src="~/images/delete.png" class="action-icon-img" />
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- FEES -->
+    <div id="fees" class="tab-pane @(Model.ActiveTab == "fees" ? "active" : "")">
+        <div class="section-title">Fees</div>
+
+        <div class="simple-card">
+            @if (Model.Fee != null && Model.Fee.SLNO > 0)
+            {
+                <form asp-action="UpdateFee" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Student.STUDENTID" />
+                    <input type="hidden" asp-for="Fee.SLNO" />
+
+                    <div class="inline-form-grid">
+                        <div class="inline-field">
+                            <label>Fee Name</label>
+                            <div class="field-box">
+                                <select asp-for="Fee.FEESNAME" asp-items="Model.FeesList" class="nice-input">
+                                    <option value="">-- Select Fee --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="inline-field">
+                            <label>Amount</label>
+                            <div class="field-box">
+                                <input asp-for="Fee.AMOUNT" type="text" class="nice-input" placeholder="Enter Amount" oninput="validateAmount(this)"/>
+                                <span id="amountError" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:24px;">
+                        <button type="submit" class="blue-btn">Update Fee</button>
+                        <a asp-action="Index" asp-route-activeTab="fees" asp-route-studentId="@Model.Student.STUDENTID" class="gray-btn">Cancel</a>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <form asp-action="AddFee" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Student.STUDENTID" />
+
+                    <div class="inline-form-grid">
+                        <div class="inline-field">
+                            <label>Fee Name</label>
+                            <div class="field-box">
+                                <select asp-for="Fee.FEESNAME" asp-items="Model.FeesList" class="nice-input">
+                                    <option value="">-- Select Fee --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="inline-field">
+                            <label>Amount</label>
+                            <div class="field-box">
+                                <input asp-for="Fee.AMOUNT" type="text" class="nice-input" placeholder="Enter Amount"oninput="validateAmount(this)" />
+                                <span id="amountError" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:24px;">
+                        <button type="submit" class="blue-btn">Add Fee</button>
+                    </div>
+                </form>
+            }
+        </div>
+
+        @if (Model.FeeRows != null && Model.FeeRows.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fee Name</th>
+                        <th>Amount</th>
+                        <th style="width:120px;">Edit</th>
+                        <th style="width:120px;">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.FeeRows)
+                    {
+                        <tr>
+                            <td>@item.FEESNAME</td>
+                            <td>@item.AMOUNT</td>
+                            <td class="icon-action-cell">
+                                <a asp-action="EditFee"
+                                   asp-route-slno="@item.SLNO"
+                                   asp-route-studentId="@Model.Student.STUDENTID"
+                                   class="icon-btn-link">
+                                    <img src="~/images/edit.png" class="action-icon-img" />
+                                </a>
+                            </td>
+                            <td class="icon-action-cell">
+                                <form asp-action="DeleteFee" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="slno" value="@item.SLNO" />
+                                    <input type="hidden" name="studentId" value="@Model.Student.STUDENTID" />
+                                    <button type="submit"
+                                            onclick="return confirm('Are you sure you want to delete this fee?')"
+                                            class="icon-btn-submit">
+                                        <img src="~/images/delete.png" class="action-icon-img" />
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- INSTALLMENTS -->
+    <div id="installments" class="tab-pane @(Model.ActiveTab == "installments" ? "active" : "")">
+        <div class="section-title">Installments</div>
+
+        <div class="simple-card">
+            <form asp-action="@(Model.Installment != null && Model.Installment.SLNO > 0 ? "UpdateInstallment" : "AddInstallment")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Student.STUDENTID" />
+                <input type="hidden" asp-for="Installment.SLNO" />
+
+                <div class="inline-form-grid">
+                    <div class="inline-field">
+                        <label>Installment Date</label>
+                        <div class="field-box">
+                            <input asp-for="Installment.DATE" type="date" class="nice-input" />
+                        </div>
+                    </div>
+
+                    <div class="inline-field">
+                        <label>Amount</label>
+                        <div class="field-box">
+                            <input asp-for="Installment.AMOUNT"  type="text" class="nice-input"oninput="validateInstallmentAmount(this)" />
+                            <span id="installmentAmountError" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:24px;">
+                    <button type="submit" class="blue-btn">
+                        @(Model.Installment != null && Model.Installment.SLNO > 0 ? "Update Installment" : "Add Installment")
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        @if (Model.InstallmentRows != null && Model.InstallmentRows.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Installment Name</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th style="width:120px;">Edit</th>
+                        <th style="width:120px;">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.InstallmentRows)
+                    {
+                        <tr>
+                            <td>@item.INSTALLMENTNAME</td>
+                            <td>@(item.DATE?.ToString("dd-MM-yyyy"))</td>
+                            <td>@item.AMOUNT</td>
+                            <td>@item.STATUS</td>
+                            <td class="icon-action-cell">
+                                <a asp-action="EditInstallment"
+                                   asp-route-id="@item.SLNO"
+                                   asp-route-studentId="@Model.Student.STUDENTID"
+                                   class="icon-btn-link">
+                                    <img src="~/images/edit.png" class="action-icon-img" />
+                                </a>
+                            </td>
+                            <td class="icon-action-cell">
+                                <a asp-action="DeleteInstallment"
+                                   asp-route-id="@item.SLNO"
+                                   asp-route-studentId="@Model.Student.STUDENTID"
+                                   onclick="return confirm('Are you sure you want to delete this installment?')"
+                                   class="icon-btn-link">
+                                    <img src="~/images/delete.png" class="action-icon-img" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<script>
+    function showTab(tabId, btn) {
+        document.querySelectorAll('.tab-pane').forEach(x => x.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+</script>
+
+<script>
+    function previewPhoto(event) {
+        var file = event.target.files[0];
+        if (!file) return;
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            document.getElementById('previewImage').src = e.target.result;
+            document.getElementById('previewImage').style.display = 'block';
+            document.getElementById('photoPlaceholder').style.display = 'none';
+            document.getElementById('fileNameBox').innerText = file.name;
+        };
+
+        reader.readAsDataURL(file);
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const order = [
+            "REG_NAME",
+            "REG_MNAME",
+            "REG_MOB1",
+            "REG_AADHAR",
+            "REG_BLOOD",
+            "REG_COURSE",
+            "REG_CASTE",
+            "REG_BEDNO",
+            "REG_FNAME",
+            "REG_DOB",
+            "REG_ADDRESS",
+            "REG_MOB2",
+            "REG_SESSION",
+            "REG_GENDER",
+            "REG_DOR",
+            "REG_YEAR",
+            "REG_SUBMIT"
+        ];
+
+        order.forEach(function (id, index) {
+            const el = document.getElementById(id);
+
+            if (!el) return;
+
+            el.addEventListener("keydown", function (e) {
+                if (e.key === "Tab") {
+                    e.preventDefault();
+
+                    if (e.shiftKey) {
+                        const prev = order[index - 1];
+                        if (prev) {
+                            document.getElementById(prev).focus();
+                        }
+                    }
+                    else {
+                        const next = order[index + 1];
+                        if (next) {
+                            document.getElementById(next).focus();
+                        }
+                    }
+                }
+            });
+        });
+    });
+    function validateStudentName(input) {
+
+    var regex = /^[A-Za-z\s]*$/;
+    var error = document.getElementById("nameError");
+
+    if (!regex.test(input.value)) {
+
+        input.value = "";
+        error.innerHTML = "Only letters are allowed.";
+    }
+    else {
+
+        error.innerHTML = "";
+    }
+}
+function validateFatherName(input) {
+
+    var regex = /^[A-Za-z\s]*$/;
+    var error = document.getElementById("fatherNameError");
+
+    if (!regex.test(input.value)) {
+
+        input.value = "";
+        error.innerHTML = "Only letters are allowed.";
+    }
+    else {
+
+        error.innerHTML = "";
+    }
+}
+
+function validateMotherName(input) {
+
+    var regex = /^[A-Za-z\s]*$/;
+    var error = document.getElementById("motherNameError");
+
+    if (!regex.test(input.value)) {
+
+        input.value = "";
+        error.innerHTML = "Only letters are allowed.";
+    }
+    else {
+
+        error.innerHTML = "";
+    }
+}
+function validateMobile1(input) {
+
+    var error = document.getElementById("mob1Error");
+
+    if (/[^0-9]/.test(input.value)) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        error.innerHTML = "Only numbers are allowed.";
+    } else {
+        error.innerHTML = "";
+    }
+
+    if (input.value.length > 10) {
+        input.value = input.value.substring(0, 10);
+    }
+}
+
+function validateMobile2(input) {
+
+    var error = document.getElementById("mob2Error");
+
+    if (/[^0-9]/.test(input.value)) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        error.innerHTML = "Only numbers are allowed.";
+    } else {
+        error.innerHTML = "";
+    }
+
+    if (input.value.length > 10) {
+        input.value = input.value.substring(0, 10);
+    }
+}
+
+function validateAadhar(input) {
+
+    var error = document.getElementById("aadharError");
+
+    if (/[^0-9]/.test(input.value)) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        error.innerHTML = "Only numbers are allowed.";
+    } else {
+        error.innerHTML = "";
+    }
+
+    if (input.value.length > 12) {
+        input.value = input.value.substring(0, 12);
+    }
+}
+function validateBedNo(input) {
+
+    var error = document.getElementById("bedNoError");
+
+    var originalValue = input.value;
+
+    input.value = input.value.replace(/[^0-9]/g, '');
+
+    if (originalValue !== input.value) {
+        error.innerHTML = "Only numbers are allowed.";
+    }
+    else {
+        error.innerHTML = "";
+    }
+}
+function validateCurrentYear(input) {
+
+    var error = document.getElementById("currentYearError");
+
+    var originalValue = input.value;
+
+    input.value = input.value.replace(/[^A-Za-z0-9\s]/g, '');
+
+    if (originalValue !== input.value) {
+        error.innerHTML = "Only letters and numbers are allowed.";
+    }
+    else {
+        error.innerHTML = "";
+    }
+}
+function validateBoardName(input) {
+
+    var error = document.getElementById("boardNameError");
+
+    var originalValue = input.value;
+
+    input.value = input.value.replace(/[^A-Za-z\s]/g, '');
+
+    if (originalValue !== input.value) {
+        error.innerHTML = "Only letters are allowed.";
+    }
+    else {
+        error.innerHTML = "";
+    }
+}
+
+function validateCollegeName(input) {
+
+    var error = document.getElementById("collegeNameError");
+
+    var originalValue = input.value;
+
+    input.value = input.value.replace(/[^A-Za-z\s]/g, '');
+
+    if (originalValue !== input.value) {
+        error.innerHTML = "Only letters are allowed.";
+    }
+    else {
+        error.innerHTML = "";
+    }
+}
+function validateCollegeRollNo(input) {
+
+    var error = document.getElementById("collegeRollNoError");
+
+    var originalValue = input.value;
+
+    input.value = input.value.replace(/[^0-9]/g, '');
+
+    if (originalValue !== input.value) {
+        error.innerHTML = "Only numbers are allowed.";
+    }
+    else {
+        error.innerHTML = "";
+    }
+}
+function validateVisitorName(input) {
+
+    var error = document.getElementById("visitorNameError");
+
+    if (/[^A-Za-z\s]/.test(input.value)) {
+
+        input.value = "";
+        error.innerHTML = "Only letters are allowed.";
+
+    } else {
+
+        error.innerHTML = "";
+    }
+}
+
+function validateRelation(input) {
+
+    var error = document.getElementById("relationError");
+
+    if (/[^A-Za-z\s]/.test(input.value)) {
+
+        input.value = "";
+        error.innerHTML = "Only letters are allowed.";
+
+    } else {
+
+        error.innerHTML = "";
+    }
+}
+function validateVisitorMobile(input) {
+
+    var error = document.getElementById("visitorMobileError");
+
+    if (/[^0-9]/.test(input.value)) {
+
+        input.value = "";
+
+        error.innerHTML = "Only numbers are allowed.";
+
+    } else {
+
+        error.innerHTML = "";
+    }
+
+}
+function validateAmount(input) {
+
+    var error = document.getElementById("amountError");
+
+    if (/[^0-9]/.test(input.value)) {
+
+        input.value = "";
+
+        error.innerHTML = "Only numbers are allowed.";
+
+    }
+    else {
+
+        error.innerHTML = "";
+    }
+}
+function validateInstallmentAmount(input) {
+
+    var error = document.getElementById("installmentAmountError");
+
+    if (/[^0-9]/.test(input.value)) {
+
+        input.value = "";
+
+        error.innerHTML = "Only numbers are allowed.";
+
+    } else {
+
+        error.innerHTML = "";
+    }
+}
+
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

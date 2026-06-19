@@ -1,0 +1,135 @@
+﻿@model MotherInstitute.Models.StudentRegd
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Linq
+
+@{
+    var sessionList = ViewBag.SessionList as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+    var courseList = ViewBag.CourseList as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+    var bedList = ViewBag.BedList as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+}
+
+<h2>Edit Student</h2>
+
+<form asp-action="Edit" method="post">
+
+    <input asp-for="STUDENTID" type="hidden" />
+
+    <div>
+        <label>Student ID</label>
+        <input asp-for="STUDENTID" readonly />
+    </div>
+    <br />
+
+    <div>
+        <label>Name</label>
+        <input asp-for="NAME" />
+    </div>
+    <br />
+
+    <div>
+        <label>Father Name</label>
+        <input asp-for="FNAME" />
+    </div>
+    <br />
+
+    <div>
+        <label>Mother Name</label>
+        <input asp-for="MNAME" />
+    </div>
+    <br />
+
+    <div>
+        <label>Address</label>
+        <textarea asp-for="ADDRESS"></textarea>
+    </div>
+    <br />
+
+    <div>
+        <label>Mobile 1</label>
+        <input asp-for="MOB1" />
+    </div>
+    <br />
+
+    <div>
+        <label>Mobile 2</label>
+        <input asp-for="MOB2" />
+    </div>
+    <br />
+
+    <div>
+        <label>Date of Birth</label>
+        <input asp-for="DOB" type="date" />
+    </div>
+    <br />
+
+    <div>
+        <label>Gender</label>
+        <select asp-for="GENDER">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+    </div>
+    <br />
+
+    <div>
+        <label>Caste</label>
+        <select asp-for="CASTE">
+            <option value="General">General</option>
+            <option value="OBC">OBC</option>
+            <option value="SC">SC</option>
+            <option value="ST">ST</option>
+        </select>
+    </div>
+    <br />
+
+    <div>
+        <label>Aadhar No</label>
+        <input asp-for="AADHARNO" />
+    </div>
+    <br />
+
+    <div>
+        <label>Blood Group</label>
+        <input asp-for="BLOODGROUP" />
+    </div>
+    <br />
+
+    <div>
+        <label>Current Year</label>
+        <input asp-for="CURRYR" />
+    </div>
+    <br />
+
+    <div>
+        <label>Course</label>
+        <select asp-for="COURSE" asp-items="courseList">
+            <option value="">-- Select Course --</option>
+        </select>
+    </div>
+    <br />
+
+    <div>
+        <label>Session</label>
+        <select asp-for="SESSION" asp-items="sessionList">
+            <option value="">-- Select Session --</option>
+        </select>
+    </div>
+    <br />
+
+    <div>
+        <label>Bed</label>
+        <select asp-for="BEDNO" asp-items="bedList">
+            <option value="">-- Select Bed --</option>
+        </select>
+    </div>
+    <br />
+
+    <div style="margin-top:15px;">
+        <button type="submit" class="btn btn-success" style="margin-left:10px;">Update</button>
+
+        <a href="/SearchStudent/Index" class="btn btn-secondary" style="margin-left:10px;">
+            Cancel
+        </a>
+    </div>
+
+</form>

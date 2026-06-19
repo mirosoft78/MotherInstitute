@@ -1,0 +1,623 @@
+﻿@model List<MotherInstitute.Models.MarketingAgent>
+
+@{
+    ViewData["Title"] = "Marketing Agent";
+
+    var editData = ViewBag.EditData as MotherInstitute.Models.MarketingAgent;
+}
+
+<style>
+
+    .container-fluid {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+</style>
+
+<div class="container-fluid px-0">
+
+    <div style="
+        border:3px solid red;
+        border-radius:30px;
+        overflow:hidden;
+        background:#f7f7f7;">
+
+        <!-- HEADER -->
+
+        <div style="
+            background:linear-gradient(90deg,#1d5fe3,#2fc4ef);
+            padding:12px;
+            text-align:center;">
+
+            <h2 style="
+                color:white;
+                margin:0;
+                font-size:18px;
+                font-weight:700;">
+
+                Manage Marketing Agent
+
+            </h2>
+
+        </div>
+
+        <!-- FORM -->
+        @if (editData == null)
+        {
+            <form asp-action="Save"
+                  method="post"
+                  style="padding:18px;">
+
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+
+                    <!-- NAME -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <label style="
+                                width:140px;
+                                font-size:12px;
+                                font-weight:600;
+                                margin-bottom:0;">
+
+                                Name
+
+                            </label>
+
+                            <div style="width:100%;">
+
+                                <input type="text"
+                                       name="Name"
+                                       class="form-control"
+                                       oninput="validateAgentName(this)" />
+
+                                <span id="agentNameError"
+                                      style="
+                                    color:red;
+                                    font-size:14px;
+                                    display:block;
+                                    margin-top:5px;">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- MOBILE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <label style="
+                                width:140px;
+                                font-size:12px;
+                                font-weight:600;
+                                margin-bottom:0;">
+
+                                Mobile Number
+
+                            </label>
+
+                            <div style="width:100%;">
+
+                                <input type="text"
+                                       name="MobileNo"
+                                       maxlength="10"
+                                       class="form-control"
+                                       oninput="validateAgentMobile(this)" />
+
+                                <span id="agentMobileError"
+                                      style="
+                                    color:red;
+                                    font-size:14px;
+                                    display:block;
+                                    margin-top:5px;">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- PASSWORD -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <label style="
+                                width:140px;
+                                font-size:12px;
+                                font-weight:600;
+                                margin-bottom:0;">
+
+                                Password
+
+                            </label>
+
+                            <input type="text"
+                                   name="Password"
+                                   class="form-control"
+                                   required
+                                   style="
+                            height:38px;
+                            font-size:12px;
+                            border-radius:6px;" />
+
+                        </div>
+
+                    </div>
+
+                    <!-- ADDRESS -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <div class="d-flex">
+
+                            <label style="
+                                width:140px;
+                                font-size:12px;
+                                font-weight:600;
+                                margin-top:10px;">
+
+                                Address
+
+                            </label>
+
+                            <textarea name="Address"
+                                      class="form-control"
+                                      rows="3"
+                                      style="
+                            font-size:12px;
+                            border-radius:6px;"></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTON -->
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        style="
+                    height:40px;
+                    padding:0 25px;
+                    border-radius:8px;
+                    font-size:12px;
+                    font-weight:600;
+                    margin-left:140px;">
+
+                    Save Agent
+
+                </button>
+
+            </form>
+        }
+
+        <!-- TITLE -->
+
+        <div style="
+            text-align:center;
+            margin-top:10px;
+            margin-bottom:10px;">
+
+            <h3 style="
+                color:#2c5dea;
+                font-size:18px;
+                font-weight:700;">
+
+                Saved Marketing Agent Data
+
+            </h3>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <table class="text-center align-middle mb-0"
+               style="
+            width:100%;
+            margin:0;
+            border-collapse:collapse;
+            table-layout:fixed;
+            font-size:12px;">
+
+            <!-- HEADER -->
+
+            <thead>
+
+                <tr style="
+                    background:#2947b8;
+                    color:white;
+                    height:45px;">
+
+                    <th style="
+                        background:#2947b8;
+                        color:white;
+                        border:none;
+                        font-size:12px;
+                        font-weight:600;">
+
+                        Edit
+
+                    </th>
+
+                    <th style="
+                        background:#2947b8;
+                        color:white;
+                        border:none;
+                        font-size:12px;
+                        font-weight:600;">
+
+                        ID
+
+                    </th>
+
+                    <th style="
+                        background:#2947b8;
+                        color:white;
+                        border:none;
+                        font-size:12px;
+                        font-weight:600;">
+
+                        Name
+
+                    </th>
+
+                    <th style="
+                        background:#2947b8;
+                        color:white;
+                        border:none;
+                        font-size:12px;
+                        font-weight:600;">
+
+                        Mobile
+
+                    </th>
+
+                    <th style="
+                        background:#2947b8;
+                        color:white;
+                        border:none;
+                        font-size:12px;
+                        font-weight:600;">
+
+                        Address
+
+                    </th>
+
+                    <th style="
+                        background:#2947b8;
+                        color:white;
+                        border:none;
+                        font-size:12px;
+                        font-weight:600;">
+
+                        Joining Date
+
+                    </th>
+
+                    <th style="
+                        background:#2947b8;
+                        color:white;
+                        border:none;
+                        font-size:12px;
+                        font-weight:600;">
+
+                        Status
+
+                    </th>
+
+                    <th style="
+                        background:#2947b8;
+                        color:white;
+                        border:none;
+                        font-size:12px;
+                        font-weight:600;">
+
+                        Delete
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <!-- BODY -->
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    if (editData != null && editData.ID == item.ID)
+                    {
+                        <tr style="
+                            height:48px;
+                            font-size:11px;">
+
+                            <form asp-action="Save"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="ID"
+                                       value="@item.ID" />
+
+                                <!-- EDIT -->
+
+                                <td style="
+                                    border:1px solid #d9d9d9;
+                                    background:white;">
+
+                                    <button type="submit"
+                                            style="border:none;background:none;">
+
+                                        <img src="~/images/update.png"
+                                             width="26" />
+
+                                    </button>
+
+                                    <a asp-action="Index">
+
+                                        <img src="~/images/cancel.png"
+                                             width="26" />
+
+                                    </a>
+
+                                </td>
+
+                                <!-- ID -->
+
+                                <td style="
+                                    border:1px solid #d9d9d9;
+                                    background:white;">
+
+                                    @item.ID
+
+                                </td>
+
+                                <!-- NAME -->
+
+                                <td style="
+                                    border:1px solid #d9d9d9;
+                                    background:white;">
+
+                                    <input type="text"
+                                           name="Name"
+                                           value="@item.Name"
+                                           class="form-control"
+                                           style="
+                                    height:35px;
+                                    font-size:11px;" />
+
+                                </td>
+
+                                <!-- MOBILE -->
+
+                                <td style="
+                                    border:1px solid #d9d9d9;
+                                    background:white;">
+
+                                    <input type="text"
+                                           name="MobileNo"
+                                           value="@item.MobileNo"
+                                           class="form-control"
+                                           style="
+                                    height:35px;
+                                    font-size:11px;" />
+
+                                </td>
+
+                                <!-- ADDRESS -->
+
+                                <td style="
+                                    border:1px solid #d9d9d9;
+                                    background:white;">
+
+                                    <input type="text"
+                                           name="Address"
+                                           value="@item.Address"
+                                           class="form-control"
+                                           style="
+                                    height:35px;
+                                    font-size:11px;" />
+
+                                </td>
+
+                                <!-- JOINING DATE -->
+
+                                <td style="
+                                    border:1px solid #d9d9d9;
+                                    background:white;">
+
+                                    @item.JoiningDate.ToString("dd/MM/yyyy")
+
+                                </td>
+
+                                <!-- STATUS -->
+
+                                <td style="
+                                    border:1px solid #d9d9d9;
+                                    background:white;">
+
+                                    @item.Status
+
+                                </td>
+
+                                <!-- DELETE -->
+
+                                <td style="
+                                    border:1px solid #d9d9d9;
+                                    background:white;">
+
+                                    <a asp-action="Delete"
+                                           asp-route-id="@item.ID"
+                                           onclick="return confirm('Are you sure?')">
+
+                                        <img src="~/images/delete.png"
+                                             width="26" />
+
+                                    </a>
+
+                                </td>
+
+                            </form>
+
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr style="
+                            height:48px;
+                            font-size:11px;
+                            font-weight:500;">
+
+                            <!-- EDIT -->
+
+                            <td style="
+                                border:1px solid #d9d9d9;
+                                background:white;">
+
+                                <a asp-action="Edit"
+                                       asp-route-id="@item.ID">
+
+                                    <img src="~/images/edit.png"
+                                         width="26" />
+
+                                </a>
+
+                            </td>
+
+                            <!-- ID -->
+
+                            <td style="
+                                border:1px solid #d9d9d9;
+                                background:white;">
+
+                                @item.ID
+
+                            </td>
+
+                            <!-- NAME -->
+
+                            <td style="
+                                border:1px solid #d9d9d9;
+                                background:white;">
+
+                                @item.Name
+
+                            </td>
+
+                            <!-- MOBILE -->
+
+                            <td style="
+                                border:1px solid #d9d9d9;
+                                background:white;">
+
+                                @item.MobileNo
+
+                            </td>
+
+                            <!-- ADDRESS -->
+
+                            <td style="
+                                border:1px solid #d9d9d9;
+                                background:white;">
+
+                                @item.Address
+
+                            </td>
+
+                            <!-- JOINING DATE -->
+
+                            <td style="
+                                border:1px solid #d9d9d9;
+                                background:white;">
+
+                                @item.JoiningDate.ToString("dd/MM/yyyy")
+
+                            </td>
+
+                            <!-- STATUS -->
+
+                            <td style="
+                                border:1px solid #d9d9d9;
+                                background:white;">
+
+                                @item.Status
+
+                            </td>
+
+                            <!-- DELETE -->
+
+                            <td style="
+                                border:1px solid #d9d9d9;
+                                background:white;">
+
+                                <a asp-action="Delete"
+                                       asp-route-id="@item.ID"
+                                       onclick="return confirm('Are you sure?')">
+
+                                    <img src="~/images/delete.png"
+                                         width="26" />
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<script>
+
+    function validateAgentName(input) {
+
+        var error = document.getElementById("agentNameError");
+
+        var originalValue = input.value;
+
+        input.value = input.value.replace(/[^A-Za-z\s]/g, '');
+
+        if (originalValue !== input.value) {
+            error.innerHTML = "Only letters are allowed.";
+        } else {
+            error.innerHTML = "";
+        }
+    }
+
+    function validateAgentMobile(input) {
+
+        var error = document.getElementById("agentMobileError");
+
+        var originalValue = input.value;
+
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        if (originalValue !== input.value) {
+            error.innerHTML = "Only numbers are allowed.";
+        } else {
+            error.innerHTML = "";
+        }
+    }
+
+</script>

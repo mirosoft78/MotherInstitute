@@ -1,0 +1,147 @@
+﻿@model List<MotherInstitute.Models.StudentRegd>
+
+@{
+    ViewData["Title"] = "Change Current Status Of Student";
+}
+
+<div class="main-content-box">
+    <style>
+            .page-header {
+                padding: 12px 20px;
+                margin-bottom: 18px;
+            }
+
+                .page-header h2 {
+                    margin: 0;
+                    font-size: 28px;
+                }
+    </style>
+    <div class="page-header">
+        <h2>Change Current Status Of A Student</h2>
+    </div>
+
+    @if (ViewBag.Message != null)
+    {
+        <div style="margin-bottom:15px; padding:10px; background:#d1fae5; color:#065f46; border-radius:8px; font-weight:600;">
+            @ViewBag.Message
+        </div>
+    }
+
+    <form asp-action="Index" method="post" class="page-form-row" style="margin-bottom:25px;">
+        <div style="display:flex; gap:20px; align-items:end; flex-wrap:wrap;">
+
+            <div>
+                <label style="font-weight:600; display:block; margin-bottom:6px;">Select Session</label>
+                <select name="session" style="padding:10px; min-width:180px; border-radius:8px;">
+
+                    @if (ViewBag.SelectedSession == null)
+                    {
+                        <option value="" disabled selected>Select Session</option>
+                    }
+                    else
+                    {
+                        <option value="" disabled>Select Session</option>
+                    }
+
+                    @foreach (var s in ViewBag.Sessions)
+                    {
+                        if (!string.IsNullOrWhiteSpace(s?.ToString()))
+                        {
+                            if (ViewBag.SelectedSession != null && ViewBag.SelectedSession.ToString() == s.ToString())
+                            {
+                                <option value="@s" selected>@s</option>
+                            }
+                            else
+                            {
+                                <option value="@s">@s</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label style="font-weight:600; display:block; margin-bottom:6px;">Select Course</label>
+                <select name="course" style="padding:10px; min-width:180px; border-radius:8px;">
+
+                    @if (ViewBag.SelectedCourse == null)
+                    {
+                        <option value="" disabled selected>Select Course</option>
+                    }
+                    else
+                    {
+                        <option value="" disabled>Select Course</option>
+                    }
+
+                    @foreach (var c in ViewBag.Courses)
+                    {
+                        if (!string.IsNullOrWhiteSpace(c?.ToString()))
+                        {
+                            if (ViewBag.SelectedCourse != null && ViewBag.SelectedCourse.ToString() == c.ToString())
+                            {
+                                <option value="@c" selected>@c</option>
+                            }
+                            else
+                            {
+                                <option value="@c">@c</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+            <div>
+                <button type="submit">View</button>
+            </div>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <form asp-action="UpdateStatus" method="post" class="page-form-row">
+            <input type="hidden" name="session" value="@ViewBag.SelectedSession" />
+            <input type="hidden" name="course" value="@ViewBag.SelectedCourse" />
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Regd No</th>
+                        <th>Name</th>
+                        <th>Current Status</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.STUDENTID</td>
+                            <td>@item.NAME</td>
+                            <td>@item.CURRYR</td>
+                            <td>
+                                <input type="checkbox" name="selectedIds" value="@item.STUDENTID" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div style="margin-top:20px; display:flex; gap:20px; align-items:end; flex-wrap:wrap;">
+                <div>
+                    <label style="font-weight:600; display:block; margin-bottom:6px;">Status Changed To</label>
+                    <select name="newStatus" style="padding:10px; min-width:180px; border-radius:8px;">
+                        <option value="" disabled selected>Select Status</option>
+                        <option value="SUMMER">SUMMER</option>
+                        <option value="1ST YEAR">1ST YEAR</option>
+                        <option value="2ND YEAR">2ND YEAR</option>
+                        <option value="EXIT">EXIT</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    }
+</div>

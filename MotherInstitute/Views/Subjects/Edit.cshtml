@@ -1,0 +1,12 @@
+﻿@model MotherInstitute.Models.Subjects
+
+<h2>Edit Subject</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="oldName" value="@ViewBag.OldName" />
+
+    <label>Subject Name</label>
+    <input asp-for="NAME" />
+
+    <button type="submit">Update</button>
+</form>

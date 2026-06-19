@@ -1,0 +1,45 @@
+﻿@model MotherInstitute.Models.BedDetails
+
+<h2>Edit Bed Details</h2>
+
+<form asp-action="Edit" method="post">
+
+    <!-- IMPORTANT -->
+    <input type="hidden" asp-for="SLNO" />
+
+    <div>
+        <label>Bed No</label>
+        <input asp-for="BEDNO" />
+    </div>
+    <br />
+
+    <div>
+        <label>Building</label>
+        <input asp-for="BUILDING" />
+    </div>
+    <br />
+
+    <div>
+        <label>Floor</label>
+        <input asp-for="FLOOR" />
+    </div>
+    <br />
+
+    <div>
+        <label>Room</label>
+        <input asp-for="ROOM" />
+    </div>
+    <br />
+
+    <div>
+        <label>Status</label>
+        <select asp-for="STATUS">
+            <option value="FREE">FREE</option>
+            <option value="BOOKED">BOOKED</option>
+        </select>
+    </div>
+    <br />
+
+    <button type="submit">Update</button>
+
+</form>

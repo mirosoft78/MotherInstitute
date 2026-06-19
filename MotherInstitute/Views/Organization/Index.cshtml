@@ -1,0 +1,550 @@
+﻿@model MotherInstitute.Models.Organization
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Manage Organization";
+    var orgList = ViewBag.OrgList as List<MotherInstitute.Models.Organization>;
+}
+
+<div class="main-content-box">
+
+    <style>
+
+            .page-header {
+                padding: 10px 16px;
+                border-radius: 0 0 14px 14px;
+                background: linear-gradient(90deg, #2563eb, #22c7f0);
+                margin-bottom: 14px;
+            }
+
+                .page-header h2 {
+                    margin: 0;
+                    font-size: 22px;
+                    color: white;
+                    text-align: center;
+                    font-weight: 700;
+                }
+
+            .org-form-area {
+                margin-bottom: 16px;
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .org-grid {
+                display: grid;
+                grid-template-columns: 110px 1fr 110px 1fr;
+                gap: 18px 20px;
+                align-items: center;
+            }
+
+                .org-grid label {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #1f2937;
+                    margin: 0;
+                }
+
+            .form-control-custom {
+                width: 100%;
+                height: 34px;
+                padding: 6px 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                font-size: 12px;
+                background: #fff;
+                outline: none;
+            }
+
+            textarea.form-control-custom {
+                height: 100px;
+                resize: none;
+                padding-top: 8px;
+            }
+
+            .file-box {
+                width: 100%;
+                height: 34px;
+                border: 1px solid #2563eb;
+                border-radius: 6px;
+                background: #fff;
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+
+            .submit-btn {
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 7px 20px;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                margin-top: 16px;
+            }
+
+                .submit-btn:hover {
+                    background: #1d4ed8;
+                }
+
+            .section-title {
+                text-align: center;
+                color: #2563eb;
+                font-size: 22px;
+                font-weight: 700;
+                margin: 40px 0 16px;
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .org-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                overflow: hidden;
+                border-radius: 10px;
+            }
+
+                .org-table thead tr {
+                    background: #2643b5;
+                }
+
+                .org-table th {
+                    color: white;
+                    padding: 8px 10px;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    border-right: 1px solid rgba(255,255,255,0.10);
+                    white-space: nowrap;
+                }
+
+                .org-table td {
+                    padding: 8px 10px;
+                    border-bottom: 1px solid #e5e7eb;
+                    text-align: center;
+                    vertical-align: middle;
+                    font-size: 12px;
+                    white-space: nowrap;
+                }
+
+                .org-table tbody tr:nth-child(even) {
+                    background: #fafafa;
+                }
+
+                .org-table tbody tr:hover {
+                    background: #edf4ff;
+                }
+
+            .action-icon {
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+            }
+
+            .logo-preview {
+                width: 45px;
+                height: 45px;
+                object-fit: contain;
+            }
+
+            .empty-field-warning {
+                border: 1px solid red !important;
+            }
+
+            /* ================= MOBILE RESPONSIVE ================= */
+
+            @@media screen and (max-width: 768px) {
+
+                .org-form-area {
+                    padding-left: 12px;
+                    padding-right: 12px;
+                }
+
+                .org-grid {
+                    grid-template-columns: 1fr;
+                    gap: 10px;
+                }
+
+                    .org-grid label {
+                        font-size: 15px;
+                        margin-top: 5px;
+                    }
+
+                .form-control-custom,
+                .file-box {
+                    width: 100%;
+                    height: 42px;
+                    font-size: 14px;
+                }
+
+                textarea.form-control-custom {
+                    height: 120px;
+                }
+
+                .submit-btn {
+                    width: 100%;
+                    height: 45px;
+                    font-size: 15px;
+                }
+
+                .page-header h2 {
+                    font-size: 20px;
+                }
+
+                .section-title {
+                    font-size: 18px;
+                    margin-top: 25px;
+                }
+
+                .org-table {
+                    display: block;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                    width: 100%;
+                }
+
+                    .org-table th,
+                    .org-table td {
+                        font-size: 12px;
+                        padding: 8px;
+                    }
+
+                .logo-preview {
+                    width: 35px;
+                    height: 35px;
+                }
+
+                .action-icon {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+
+    </style>
+
+    <div class="page-header">
+        <h2>Manage Organization</h2>
+    </div>
+
+    <form asp-action="@(Model.SLNO > 0 ? "Update" : "Index")"
+          method="post"
+          enctype="multipart/form-data"
+          id="orgForm"
+          class="org-form-area">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="SLNO" />
+
+        <div class="org-grid">
+
+            <label>Name</label>
+
+            <div>
+                <input asp-for="NAME"
+                       class="form-control-custom check-empty"
+                       oninput="validateOrgName(this)" />
+
+                <span id="orgNameError"
+                      style="color:red;font-size:14px;">
+                </span>
+            </div>
+                   
+
+            <label>Logo</label>
+
+            <input asp-for="LogoFile"
+                   type="file"
+                   class="file-box" />
+
+            <label>Regd No</label>
+
+            <div>
+                <input asp-for="REGDNO"
+                       class="form-control-custom check-empty"
+                       oninput="validateRegdNo(this)" />
+
+                <span id="regdNoError"
+                      style="color:red;font-size:14px;">
+                </span>
+            </div>
+
+            <label>Regd Date</label>
+
+            <input asp-for="REGDDATE"
+                   type="date"
+                   class="form-control-custom check-empty" />
+
+            <label>Mobile</label>
+
+            <div>
+                <input asp-for="MOBILE"
+                       class="form-control-custom check-empty"
+                       maxlength="10"
+                       oninput="validateOrgMobile(this)" />
+
+                <span id="orgMobileError"
+                      style="color:red;font-size:14px;">
+                </span>
+            </div>
+
+            <label>Mail ID</label>
+
+            <input asp-for="MAILID"
+                   class="form-control-custom check-empty" />
+
+            <label style="align-self:start; margin-top:10px;">
+                Address
+            </label>
+
+            <textarea asp-for="ADDRESS"
+                      class="form-control-custom check-empty"></textarea>
+
+            <div></div>
+            <div></div>
+
+        </div>
+
+        <button type="submit" class="submit-btn">
+            @(Model.SLNO > 0 ? "Update" : "Submit")
+        </button>
+
+    </form>
+
+    <div class="section-title">
+        Saved Organization Data
+    </div>
+
+    @if (orgList != null && orgList.Any())
+    {
+        <table class="org-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Edit</th>
+                    <th>SLNO</th>
+                    <th>Name</th>
+                    <th>Logo</th>
+                    <th>Regd No</th>
+                    <th>Regd Date</th>
+                    <th>Mobile</th>
+                    <th>Mail ID</th>
+                    <th>Address</th>
+                    <th>Delete</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in orgList)
+                {
+                    <tr>
+
+                        <td>
+
+                            <a asp-action="Edit"
+                                   asp-route-id="@item.SLNO">
+
+                                <img src="~/images/edit.png"
+                                     class="action-icon" />
+
+                            </a>
+
+                        </td>
+
+                        <td>@item.SLNO</td>
+
+                        <td>@item.NAME</td>
+
+                        <td>
+
+                            @if (!string.IsNullOrEmpty(item.LOGO))
+                            {
+                                <img src="@item.LOGO"
+                                     class="logo-preview" />
+                            }
+
+                        </td>
+
+                        <td>@item.REGDNO</td>
+
+                        <td>@Convert.ToDateTime(item.REGDDATE).ToString("dd/MM/yyyy")</td>
+
+                        <td>@item.MOBILE</td>
+
+                        <td>@item.MAILID</td>
+
+                        <td>@item.ADDRESS</td>
+
+                        <td>
+
+                            <form asp-action="Delete"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to delete?');"
+                                  style="margin:0;">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.SLNO" />
+
+                                <button type="submit"
+                                        style="
+                                    border:none;
+                                    background:none;
+                                    padding:0;
+                                    margin:0;
+                                    cursor:pointer;">
+
+                                    <img src="~/images/delete.png"
+                                         class="action-icon" />
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+    }
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+            var oldMessage = '@TempData["Message"]';
+
+            if (successMessage && successMessage !== '') {
+                alert(successMessage);
+            }
+
+            if (errorMessage && errorMessage !== '') {
+                alert(errorMessage);
+            }
+
+            if (oldMessage && oldMessage !== '') {
+                alert(oldMessage);
+            }
+
+            var orgForm = document.getElementById("orgForm");
+
+            if (orgForm) {
+
+                orgForm.addEventListener("submit", function (e) {
+
+                    var fields = orgForm.querySelectorAll(".check-empty");
+
+                    var hasEmpty = false;
+
+                    var emptyNames = [];
+
+                    fields.forEach(function (field) {
+
+                        field.classList.remove("empty-field-warning");
+
+                        if (field.value.trim() === "") {
+
+                            hasEmpty = true;
+
+                            field.classList.add("empty-field-warning");
+
+                            var label = field.parentElement
+                                             .previousElementSibling;
+
+                            if (label) {
+                                emptyNames.push(label.innerText.trim());
+                            }
+                        }
+                    });
+
+                    if (hasEmpty) {
+
+                        var message =
+                            "Some fields are empty:\n\n" +
+                            emptyNames.join(", ") +
+                            "\n\nDo you want to continue?";
+
+                        var confirmSave = confirm(message);
+
+                        if (!confirmSave) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+
+        });
+                function validateOrgName(input) {
+
+            var error = document.getElementById("orgNameError");
+
+            var original = input.value;
+
+            input.value = input.value.replace(/[^A-Za-z\s]/g, '');
+
+            if (original !== input.value) {
+                error.innerHTML = "Only letters are allowed.";
+            }
+            else {
+                error.innerHTML = "";
+            }
+        }
+                function validateRegdNo(input) {
+
+            var error = document.getElementById("regdNoError");
+
+            var original = input.value;
+
+            input.value = input.value.replace(/[^0-9]/g, '');
+
+            if (original !== input.value) {
+
+                error.innerHTML = "Only numbers are allowed.";
+
+            } else {
+
+                error.innerHTML = "";
+            }
+        }
+                function validateOrgMobile(input) {
+
+            var error = document.getElementById("orgMobileError");
+
+            var original = input.value;
+
+            input.value = input.value.replace(/[^0-9]/g, '');
+
+            if (original !== input.value) {
+
+                error.innerHTML = "Only numbers are allowed.";
+
+            } else {
+
+                error.innerHTML = "";
+            }
+        }
+
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

@@ -1,0 +1,899 @@
+﻿@model List<MotherInstitute.Models.StudentPayment>
+
+@{
+    ViewData["Title"] = "Student Payments";
+}
+
+<div class="main-content-box">
+
+    <div class="page-header">
+        <h2>Payment From Students</h2>
+    </div>
+
+    <!-- FORM -->
+    <form asp-action="Create"
+          method="post"
+          style="padding:18px;">
+
+        <div class="row">
+
+            <!-- STUDENT ID -->
+
+            <div class="col-md-6 mb-3 position-relative">
+
+                <div class="d-flex align-items-center">
+
+                    <label style="
+                        width:140px;
+                        font-size:12px;
+                        font-weight:600;
+                        margin-bottom:0;">
+
+                        Student ID
+
+                    </label>
+
+                    <div style="
+                        width:100%;
+                        position:relative;">
+
+                        <input type="text"
+                               id="studentIdInput"
+                               name="STUDENTID"
+                               value="@ViewBag.StudentId"
+                               placeholder="Search Student ID"
+                               autocomplete="off"
+                               onkeyup="searchStudent()"
+                               class="form-control"
+                               style="
+                        height:38px;
+                        font-size:12px;
+                        border-radius:6px;" required />
+
+                        <!-- DROPDOWN -->
+
+                        <div id="studentDropdown"
+                             style="
+                            display:none;
+                            position:absolute;
+                            top:42px;
+                            left:0;
+                            width:100%;
+                            background:white;
+                            border:1px solid #d1d5db;
+                            border-radius:6px;
+                            max-height:220px;
+                            overflow-y:auto;
+                            z-index:9999;
+                            box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+
+                            @{
+                                var students = Context.RequestServices
+                                .GetService(typeof(MotherInstitute.Models.AppDbContext))
+                                as MotherInstitute.Models.AppDbContext;
+
+                                var studentList = students.StudentRegds
+                                .OrderBy(x => x.STUDENTID)
+                                .Take(500)
+                                .ToList();
+                            }
+
+                            @foreach (var student in studentList)
+                            {
+                                <div class="student-option"
+                                     onclick="selectStudent('@student.STUDENTID')"
+                                     style="
+                                    padding:10px 14px;
+                                    cursor:pointer;
+                                    border-bottom:1px solid #f1f5f9;
+                                    background:white;">
+
+                                    <div style="
+                                        font-size:12px;
+                                        font-weight:600;
+                                        color:#0f172a;">
+
+                                        @student.STUDENTID - @student.NAME
+
+                                    </div>
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- DATE -->
+
+            <div class="col-md-6 mb-3">
+
+                <div class="d-flex align-items-center">
+
+                    <label style="
+                        width:140px;
+                        font-size:12px;
+                        font-weight:600;
+                        margin-bottom:0;">
+
+                        Date
+
+                    </label>
+
+                    <input type="date"
+                           name="DATE"
+                           required
+                           class="form-control"
+                           style="
+                    height:38px;
+                    font-size:12px;
+                    border-radius:6px;" />
+
+                </div>
+
+            </div>
+
+            <!-- MOP -->
+
+            <div class="col-md-6 mb-3">
+
+                <div class="d-flex align-items-center">
+
+                    <label style="
+                        width:140px;
+                        font-size:12px;
+                        font-weight:600;
+                        margin-bottom:0;">
+
+                        MOP
+
+                    </label>
+
+                    <select name="MOP"
+                            required
+                            class="form-control"
+                            style="
+                        height:38px;
+                        font-size:12px;
+                        border-radius:6px;">
+
+                        <option value="">Select MOP</option>
+                        <option value="CASH">CASH</option>
+                        <option value="BANK">BANK</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- AMOUNT -->
+
+            <div class="col-md-6 mb-3">
+
+                <div class="d-flex align-items-center">
+
+                    <label style="
+                        width:140px;
+                        font-size:12px;
+                        font-weight:600;
+                        margin-bottom:0;">
+
+                        Amount
+
+                    </label>
+
+                    <input type="number"
+                           step="0.01"
+                           name="AMOUNT"
+                           placeholder="Enter Amount"
+                           required
+                           class="form-control"
+                           style="
+                    height:38px;
+                    font-size:12px;
+                    border-radius:6px;" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BUTTON -->
+
+        <div style="margin-left:140px;">
+
+            <button type="submit"
+                    class="btn btn-primary"
+                    style="
+                height:38px;
+                padding:0 25px;
+                border-radius:6px;
+                font-size:12px;
+                font-weight:600;">
+
+                Submit
+
+            </button>
+
+        </div>
+
+    </form>
+
+    @if (!string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.StudentId)))
+    {
+        <!-- PDF -->
+        <div style="display:flex;
+            justify-content:flex-end;
+            padding:15px;">
+
+            <a asp-controller="StudentPayments"
+                   asp-action="DownloadLedgerPdf"
+                   asp-route-studentId="@ViewBag.StudentId"
+                   style="background:#0ea5e9;
+                color:white;
+                padding:12px 22px;
+                border-radius:10px;
+                text-decoration:none;
+                font-weight:700;">
+
+                📄 Download PDF
+
+            </a>
+
+        </div>
+
+        <!-- SUMMARY -->
+        <h2 style="text-align:center;
+            margin-top:25px;">
+            Summary
+        </h2>
+
+        <div style="display:flex;
+            justify-content:space-around;
+            padding:15px;
+            font-weight:bold;">
+
+            <div>Total Expense: @ViewBag.TotalExpense</div>
+            <div>Total Installment: @ViewBag.TotalInstallment</div>
+            <div>Total Payment: @ViewBag.TotalPayment</div>
+            <div>Due Amount: @ViewBag.DueAmount</div>
+
+        </div>
+
+        <!-- DETAILS -->
+        <h2 style="text-align:center;
+            margin:20px;">
+            Details
+        </h2>
+
+        <div style="display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+            padding:0 15px;">
+
+            <!-- EXPENSES -->
+            <div style="flex:1;
+                min-width:320px;">
+
+                <h3 style="text-align:center;">
+                    Expenses
+                </h3>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in ViewBag.Expenses)
+                        {
+                            <tr data-expense-id="@item.SLNO">
+
+                                <!-- EDIT -->
+                                <td style="text-align:center; white-space:nowrap;">
+
+                                    <img src="~/images/edit.png"
+                                         class="exp-action-icon"
+                                         onclick="editExpense(this)"
+                                         style="width:22px; cursor:pointer;" />
+
+                                    <img src="~/images/update.png"
+                                         class="exp-action-icon"
+                                         onclick="updateExpense(this)"
+                                         style="display:none; width:22px; cursor:pointer;" />
+
+                                    <img src="~/images/cancel.png"
+                                         class="exp-action-icon"
+                                         onclick="cancelExpense(this)"
+                                         style="display:none; width:22px; cursor:pointer;" />
+
+                                </td>
+
+                                <!-- DATE -->
+                                <td>
+
+                                    <span class="exp-date-text">
+                                        @item.DATE.ToString("dd/MM/yyyy")
+                                    </span>
+
+                                    <input class="exp-date-input"
+                                           type="date"
+                                           value="@item.DATE.ToString("yyyy-MM-dd")"
+                                           style="display:none; width:100%;" />
+
+                                </td>
+
+                                <!-- CATEGORY -->
+                                <td>
+
+                                    <span class="exp-category-text">
+                                        @item.CATEGORY
+                                    </span>
+
+                                    <select class="exp-category-input"
+                                            style="display:none;
+                                        width:100%;
+                                        height:32px;
+                                        border:1px solid #d1d5db;
+                                        border-radius:4px;
+                                        padding:2px 6px;">
+
+                                        <option value="FOODING"
+                                                selected="@(item.CATEGORY == "FOODING")">
+                                            FOODING
+                                        </option>
+
+                                        <option value="TRANSPORT"
+                                                selected="@(item.CATEGORY == "TRANSPORT")">
+                                            TRANSPORT
+                                        </option>
+
+                                        <option value="MEDICAL"
+                                                selected="@(item.CATEGORY == "MEDICAL")">
+                                            MEDICAL
+                                        </option>
+
+                                        <option value="ACADEMIC"
+                                                selected="@(item.CATEGORY == "ACADEMIC")">
+                                            ACADEMIC
+                                        </option>
+
+                                    </select>
+
+                                </td>
+
+                                <!-- AMOUNT -->
+                                <td>
+
+                                    <span class="exp-amount-text">
+                                        @item.AMOUNT
+                                    </span>
+
+                                    <input class="exp-amount-input"
+                                           type="number"
+                                           value="@item.AMOUNT"
+                                           style="display:none; width:100%;" />
+
+                                </td>
+
+                                <!-- DELETE -->
+                                <td style="text-align:center;">
+
+                                    <img src="~/images/delete.png"
+                                         onclick="deleteExpense(this)"
+                                         style="width:22px; cursor:pointer;" />
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- INSTALLMENTS -->
+            <div style="flex:1;
+                min-width:320px;">
+
+                <h3 style="text-align:center;">
+                    Installments
+                </h3>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in ViewBag.Installments)
+                        {
+                            <tr data-installment-id="@item.SLNO">
+
+                                <!-- EDIT -->
+                                <td style="text-align:center; white-space:nowrap;">
+
+                                    <img src="~/images/edit.png"
+                                         class="ins-action-icon"
+                                         onclick="editInstallment(this)"
+                                         style="width:22px; cursor:pointer;" />
+
+                                    <img src="~/images/update.png"
+                                         class="ins-action-icon"
+                                         onclick="updateInstallment(this)"
+                                         style="display:none; width:22px; cursor:pointer;" />
+
+                                    <img src="~/images/cancel.png"
+                                         class="ins-action-icon"
+                                         onclick="cancelInstallment(this)"
+                                         style="display:none; width:22px; cursor:pointer;" />
+
+                                </td>
+
+                                <!-- DATE -->
+                                <td>
+
+                                    <span class="ins-date-text">
+                                        @item.DATE?.ToString("dd/MM/yyyy")
+                                    </span>
+
+                                    <input class="ins-date-input"
+                                           type="date"
+                                           value="@item.DATE?.ToString("yyyy-MM-dd")"
+                                           style="display:none; width:100%;" />
+
+                                </td>
+
+                                <!-- AMOUNT -->
+                                <td>
+
+                                    <span class="ins-amount-text">
+                                        @item.AMOUNT
+                                    </span>
+
+                                    <input class="ins-amount-input"
+                                           type="number"
+                                           value="@item.AMOUNT"
+                                           style="display:none; width:100%;" />
+
+                                </td>
+
+                                <!-- DELETE -->
+                                <td style="text-align:center;">
+
+                                    <img src="~/images/delete.png"
+                                         onclick="deleteInstallment(this)"
+                                         style="width:22px; cursor:pointer;" />
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- PAYMENTS -->
+            <div style="flex:1;
+                min-width:320px;">
+
+                <h3 style="text-align:center;">
+                    Payments
+                </h3>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Date</th>
+                            <th>MOP</th>
+                            <th>Amount</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr data-payment-id="@item.SLNO">
+
+                                <td style="text-align:center; white-space:nowrap;">
+
+                                    <img src="~/images/edit.png"
+                                         class="action-icon"
+                                         onclick="editPayment(this)"
+                                         style="width:22px; cursor:pointer;" />
+
+                                    <img src="~/images/update.png"
+                                         class="action-icon"
+                                         onclick="updatePayment(this)"
+                                         style="display:none; width:22px; cursor:pointer;" />
+
+                                    <img src="~/images/cancel.png"
+                                         class="action-icon"
+                                         onclick="cancelPayment(this)"
+                                         style="display:none; width:22px; cursor:pointer;" />
+
+                                </td>
+
+                                <td>
+
+                                    <span class="pay-date-text">
+                                        @item.DATE.ToString("dd/MM/yyyy")
+                                    </span>
+
+                                    <input class="pay-date-input"
+                                           type="date"
+                                           value="@item.DATE.ToString("yyyy-MM-dd")"
+                                           style="display:none; width:100%;" />
+
+                                </td>
+
+                                <td>
+
+                                    <span class="pay-mop-text">
+                                        @item.MOP
+                                    </span>
+
+                                    <select class="pay-mop-input"
+                                            style="display:none; width:100%;">
+
+                                        <option value="CASH"
+                                                selected="@(item.MOP == "CASH")">
+                                            CASH
+                                        </option>
+
+                                        <option value="BANK"
+                                                selected="@(item.MOP == "BANK")">
+                                            BANK
+                                        </option>
+
+                                    </select>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="pay-amount-text">
+                                        @item.AMOUNT
+                                    </span>
+
+                                    <input class="pay-amount-input"
+                                           type="number"
+                                           step="0.01"
+                                           value="@item.AMOUNT"
+                                           style="display:none; width:100%;" />
+
+                                </td>
+
+                                <td style="text-align:center;">
+
+                                    <img src="~/images/delete.png"
+                                         onclick="deletePayment(this)"
+                                         style="width:22px; cursor:pointer;" />
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<script>
+
+    // =========================
+    // SEARCH STUDENT
+    // =========================
+
+    function searchStudent() {
+
+        let input = document.getElementById("studentIdInput");
+        let filter = input.value.toUpperCase();
+
+        let dropdown = document.getElementById("studentDropdown");
+        let items = dropdown.getElementsByClassName("student-option");
+
+        dropdown.style.display = "block";
+
+        for (let i = 0; i < items.length; i++) {
+
+            let txt = items[i].innerText;
+
+            if (txt.toUpperCase().indexOf(filter) > -1) {
+
+                items[i].style.display = "";
+            }
+            else {
+
+                items[i].style.display = "none";
+            }
+        }
+    }
+
+    function selectStudent(studentId) {
+
+        window.location.href =
+            "/StudentPayments/Index?studentId=" +
+            encodeURIComponent(studentId);
+    }
+
+    // =========================
+    // PAYMENT
+    // =========================
+
+    function editPayment(btn) {
+
+        let row = btn.closest("tr");
+
+        row.querySelector(".pay-date-text").style.display = "none";
+        row.querySelector(".pay-mop-text").style.display = "none";
+        row.querySelector(".pay-amount-text").style.display = "none";
+
+        row.querySelector(".pay-date-input").style.display = "inline-block";
+        row.querySelector(".pay-mop-input").style.display = "inline-block";
+        row.querySelector(".pay-amount-input").style.display = "inline-block";
+
+        row.querySelectorAll(".action-icon")[0].style.display = "none";
+        row.querySelectorAll(".action-icon")[1].style.display = "inline-block";
+        row.querySelectorAll(".action-icon")[2].style.display = "inline-block";
+    }
+
+    function cancelPayment(btn) {
+
+        location.reload();
+    }
+
+    function updatePayment(btn) {
+
+        let row = btn.closest("tr");
+
+        let data = {
+
+            SLNO: parseInt(row.dataset.paymentId),
+
+            DATE: row.querySelector(".pay-date-input").value,
+
+            MOP: row.querySelector(".pay-mop-input").value,
+
+            AMOUNT: parseFloat(row.querySelector(".pay-amount-input").value)
+        };
+
+        fetch('/StudentPayments/UpdatePayment', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(data)
+
+        })
+        .then(response => response.json())
+        .then(result => {
+
+            if (result.success) {
+
+                alert("Payment Updated Successfully");
+
+                location.reload();
+            }
+            else {
+
+                alert("Payment Update Failed");
+            }
+        })
+        .catch(error => {
+
+            console.log(error);
+
+            alert("Server Error");
+        });
+    }
+
+    function deletePayment(btn) {
+
+        if (confirm("Delete Payment?")) {
+
+            btn.closest("tr").remove();
+        }
+    }
+
+    // =========================
+    // EXPENSE
+    // =========================
+
+    function editExpense(btn) {
+
+        let row = btn.closest("tr");
+
+        row.querySelector(".exp-date-text").style.display = "none";
+        row.querySelector(".exp-category-text").style.display = "none";
+        row.querySelector(".exp-amount-text").style.display = "none";
+
+        row.querySelector(".exp-date-input").style.display = "inline-block";
+        row.querySelector(".exp-category-input").style.display = "inline-block";
+        row.querySelector(".exp-amount-input").style.display = "inline-block";
+
+        row.querySelectorAll(".exp-action-icon")[0].style.display = "none";
+        row.querySelectorAll(".exp-action-icon")[1].style.display = "inline-block";
+        row.querySelectorAll(".exp-action-icon")[2].style.display = "inline-block";
+    }
+
+    function cancelExpense(btn) {
+
+        location.reload();
+    }
+
+    function updateExpense(btn) {
+
+        let row = btn.closest("tr");
+
+        let data = {
+
+            SLNO: parseInt(row.dataset.expenseId),
+
+            DATE: row.querySelector(".exp-date-input").value,
+
+            CATEGORY: row.querySelector(".exp-category-input").value,
+
+            AMOUNT: parseFloat(row.querySelector(".exp-amount-input").value)
+        };
+
+        fetch('/StudentPayments/UpdateExpense', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(data)
+
+        })
+        .then(response => response.json())
+        .then(result => {
+
+            if (result.success) {
+
+                alert("Expense Updated Successfully");
+
+                location.reload();
+            }
+            else {
+
+                alert("Expense Update Failed");
+            }
+        })
+        .catch(error => {
+
+            console.log(error);
+
+            alert("Server Error");
+        });
+    }
+
+    function deleteExpense(btn) {
+
+        if (confirm("Delete Expense?")) {
+
+            btn.closest("tr").remove();
+        }
+    }
+
+    // =========================
+    // INSTALLMENT
+    // =========================
+
+    function editInstallment(btn) {
+
+        let row = btn.closest("tr");
+
+        row.querySelector(".ins-date-text").style.display = "none";
+        row.querySelector(".ins-amount-text").style.display = "none";
+
+        row.querySelector(".ins-date-input").style.display = "inline-block";
+        row.querySelector(".ins-amount-input").style.display = "inline-block";
+
+        row.querySelectorAll(".ins-action-icon")[0].style.display = "none";
+        row.querySelectorAll(".ins-action-icon")[1].style.display = "inline-block";
+        row.querySelectorAll(".ins-action-icon")[2].style.display = "inline-block";
+    }
+
+    function cancelInstallment(btn) {
+
+        location.reload();
+    }
+
+    function updateInstallment(btn) {
+
+        let row = btn.closest("tr");
+
+        let data = {
+
+            SLNO: parseInt(row.dataset.installmentId),
+
+            DATE: row.querySelector(".ins-date-input").value,
+
+            AMOUNT: parseFloat(row.querySelector(".ins-amount-input").value)
+        };
+
+        fetch('/StudentPayments/UpdateInstallment', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(data)
+
+        })
+        .then(response => response.json())
+        .then(result => {
+
+            if (result.success) {
+
+                alert("Installment Updated Successfully");
+
+                location.reload();
+            }
+            else {
+
+                alert("Installment Update Failed");
+            }
+        })
+        .catch(error => {
+
+            console.log(error);
+
+            alert("Server Error");
+        });
+    }
+
+    function deleteInstallment(btn) {
+
+        if (confirm("Delete Installment?")) {
+
+            btn.closest("tr").remove();
+        }
+    }
+
+</script>

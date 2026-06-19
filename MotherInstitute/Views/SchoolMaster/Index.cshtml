@@ -1,0 +1,683 @@
+﻿@model List<MotherInstitute.Models.SchoolMaster>
+
+@{
+    ViewData["Title"] = "School Master";
+    int? editId = ViewBag.EditId as int?;
+}
+
+<style>
+
+    .container-fluid {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .body-content {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .district-item,
+    .block-item {
+        padding: 10px;
+        cursor: pointer;
+        font-size: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+        .district-item:hover,
+        .block-item:hover {
+            background: #f1f1f1;
+        }
+
+</style>
+
+<div class="container-fluid px-0"
+     style="
+    margin-top:0px !important;
+    padding-top:0px !important;">
+
+    <div style="
+        border:3px solid red;
+        border-radius:30px;
+        margin-top:0;
+        overflow:hidden;
+        background:#f7f7f7;">
+
+        <!-- HEADER -->
+
+        <div style="
+            background:linear-gradient(90deg,#1d5fe3,#2fc4ef);
+            padding:12px;
+            text-align:center;">
+
+            <h2 style="
+                color:white;
+                margin:0;
+                font-size:18px;
+                font-weight:700;">
+
+                Manage School Master
+
+            </h2>
+
+        </div>
+
+        <!-- FORM -->
+
+        <form asp-action="Save"
+              method="post"
+              style="padding:18px;">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="ID" value="0" />
+
+            <div class="row">
+
+                <!-- SCHOOL NAME -->
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="d-flex align-items-center">
+
+                        <label style="
+                            width:140px;
+                            font-size:12px;
+                            font-weight:600;
+                            margin-bottom:0;">
+
+                            School Name
+
+                        </label>
+
+                        <div style="width:100%;">
+
+                            <input type="text"
+                                   name="SchoolName"
+                                   class="form-control"
+                                   oninput="validateSchoolName(this)"
+                                   style="
+                            height:38px;
+                            font-size:12px;
+                            border-radius:6px;" />
+
+                            <span id="schoolNameError"
+                                  style="
+                                color:red;
+                                font-size:14px;
+                                display:block;
+                                margin-top:4px;">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- CONTACT -->
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="d-flex align-items-center">
+
+                        <label style="
+                            width:140px;
+                            font-size:12px;
+                            font-weight:600;
+                            margin-bottom:0;">
+
+                            Contact Number
+
+                        </label>
+
+                        <div style="width:100%;">
+
+                            <input type="text"
+                                   name="ContactNo"
+                                   maxlength="10"
+                                   oninput="validateContactNo(this)"
+                                   class="form-control"
+                                   style="
+                            height:38px;
+                            font-size:12px;
+                            border-radius:6px;" />
+
+                            <span id="contactNoError"
+                                  style="
+                                color:red;
+                                font-size:14px;
+                                display:block;
+                                margin-top:4px;">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- DISTRICT -->
+
+                <div class="col-md-6 mb-3 position-relative">
+
+                    <div class="d-flex align-items-center">
+
+                        <label style="
+                            width:140px;
+                            font-size:12px;
+                            font-weight:600;
+                            margin-bottom:0;">
+
+                            District
+
+                        </label>
+
+                        <div style="width:100%;">
+
+                            <input type="text"
+                                   id="districtInput"
+                                   name="District"
+                                   autocomplete="off"
+                                   placeholder="Type district..."
+                                   class="form-control"
+                                   style="
+                            height:38px;
+                            font-size:12px;
+                            border-radius:6px;" />
+
+                            <div id="districtDropdown"
+                                 style="
+                                display:none;
+                                position:absolute;
+                                width:72%;
+                                background:white;
+                                border:1px solid #ccc;
+                                border-radius:6px;
+                                max-height:200px;
+                                overflow-y:auto;
+                                z-index:9999;">
+
+                                <div class="district-item">Angul</div>
+                                <div class="district-item">Balangir</div>
+                                <div class="district-item">Balasore</div>
+                                <div class="district-item">Bargarh</div>
+                                <div class="district-item">Bhadrak</div>
+                                <div class="district-item">Boudh</div>
+                                <div class="district-item">Cuttack</div>
+                                <div class="district-item">Deogarh</div>
+                                <div class="district-item">Dhenkanal</div>
+                                <div class="district-item">Gajapati</div>
+                                <div class="district-item">Ganjam</div>
+                                <div class="district-item">Jagatsinghpur</div>
+                                <div class="district-item">Jajpur</div>
+                                <div class="district-item">Jharsuguda</div>
+                                <div class="district-item">Kalahandi</div>
+                                <div class="district-item">Kandhamal</div>
+                                <div class="district-item">Kendrapara</div>
+                                <div class="district-item">Kendujhar</div>
+                                <div class="district-item">Khordha</div>
+                                <div class="district-item">Koraput</div>
+                                <div class="district-item">Malkangiri</div>
+                                <div class="district-item">Mayurbhanj</div>
+                                <div class="district-item">Nabarangpur</div>
+                                <div class="district-item">Nayagarh</div>
+                                <div class="district-item">Nuapada</div>
+                                <div class="district-item">Puri</div>
+                                <div class="district-item">Rayagada</div>
+                                <div class="district-item">Sambalpur</div>
+                                <div class="district-item">Subarnapur</div>
+                                <div class="district-item">Sundargarh</div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- BLOCK -->
+
+                <div class="col-md-6 mb-3 position-relative">
+
+                    <div class="d-flex align-items-center">
+
+                        <label style="
+                            width:140px;
+                            font-size:12px;
+                            font-weight:600;
+                            margin-bottom:0;">
+
+                            Block
+
+                        </label>
+
+                        <div style="width:100%;">
+
+                            <input type="text"
+                                   id="blockInput"
+                                   name="Block"
+                                   autocomplete="off"
+                                   placeholder="Type block..."
+                                   class="form-control"
+                                   style="
+                            height:38px;
+                            font-size:12px;
+                            border-radius:6px;" />
+
+                            <div id="blockDropdown"
+                                 style="
+                                display:none;
+                                position:absolute;
+                                width:72%;
+                                background:white;
+                                border:1px solid #ccc;
+                                border-radius:6px;
+                                max-height:200px;
+                                overflow-y:auto;
+                                z-index:9999;">
+
+                                <div class="block-item">Agalpur</div>
+                                <div class="block-item">Ainthapali</div>
+                                <div class="block-item">Anandapur</div>
+                                <div class="block-item">Angul</div>
+                                <div class="block-item">Athagad</div>
+                                <div class="block-item">Athmallik</div>
+                                <div class="block-item">Attabira</div>
+                                <div class="block-item">Badasahi</div>
+                                <div class="block-item">Badamba</div>
+                                <div class="block-item">Balangir</div>
+                                <div class="block-item">Balianta</div>
+                                <div class="block-item">Baliguda</div>
+                                <div class="block-item">Balikuda</div>
+                                <div class="block-item">Balipatna</div>
+                                <div class="block-item">Balishankara</div>
+                                <div class="block-item">Bamra</div>
+                                <div class="block-item">Banapur</div>
+                                <div class="block-item">Banki</div>
+                                <div class="block-item">Baranga</div>
+                                <div class="block-item">Bargarh</div>
+                                <div class="block-item">Baripada</div>
+                                <div class="block-item">Barkote</div>
+                                <div class="block-item">Basudevpur</div>
+                                <div class="block-item">Begunia</div>
+                                <div class="block-item">Belaguntha</div>
+                                <div class="block-item">Belpara</div>
+                                <div class="block-item">Betnoti</div>
+                                <div class="block-item">Bhadrak</div>
+                                <div class="block-item">Bhandaripokhari</div>
+                                <div class="block-item">Bhanjanagar</div>
+                                <div class="block-item">Bhapur</div>
+                                <div class="block-item">Bhubaneswar</div>
+                                <div class="block-item">Bijepur</div>
+                                <div class="block-item">Binika</div>
+                                <div class="block-item">Biramitrapur</div>
+                                <div class="block-item">Birmaharajpur</div>
+                                <div class="block-item">Bisam Cuttack</div>
+                                <div class="block-item">Bissamcuttack</div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ADDRESS -->
+
+                <div class="col-md-12 mb-3">
+
+                    <div class="d-flex">
+
+                        <label style="
+                            width:140px;
+                            font-size:12px;
+                            font-weight:600;
+                            margin-top:10px;">
+
+                            Address
+
+                        </label>
+
+                        <textarea name="Address"
+                                  rows="4"
+                                  class="form-control"
+                                  style="
+                        font-size:12px;
+                        border-radius:6px;"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <button type="submit"
+                    class="btn btn-primary"
+                    style="
+                height:40px;
+                padding:0 25px;
+                border-radius:8px;
+                font-size:12px;
+                font-weight:600;
+                margin-left:140px;">
+
+                Save School
+
+            </button>
+
+        </form>
+
+        <!-- TITLE -->
+
+        <div style="
+            text-align:center;
+            margin-top:10px;
+            margin-bottom:10px;">
+
+            <h3 style="
+                color:#2c5dea;
+                font-size:18px;
+                font-weight:700;">
+
+                Saved School Data
+
+            </h3>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <table class="text-center align-middle mb-0"
+               style="
+            width:100%;
+            margin:0;
+            border-collapse:collapse;
+            table-layout:fixed;
+            font-size:12px;">
+
+            <thead>
+
+                <tr style="
+                    background:#2947b8;
+                    color:white;
+                    height:45px;">
+
+                    <th>Edit</th>
+                    <th>ID</th>
+                    <th>School Name</th>
+                    <th>District</th>
+                    <th>Block</th>
+                    <th>Address</th>
+                    <th>Contact Number</th>
+                    <th>Delete</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr style="
+                        height:48px;
+                        font-size:11px;
+                        font-weight:500;">
+
+                        <td style="border:1px solid #d9d9d9;background:white;">
+
+                            <a asp-action="Edit"
+                                   asp-route-id="@item.ID">
+
+                                <img src="~/images/edit.png"
+                                     width="26" />
+
+                            </a>
+
+                        </td>
+
+                        <td style="border:1px solid #d9d9d9;background:white;">
+
+                            @item.ID
+
+                        </td>
+
+                        <td style="border:1px solid #d9d9d9;background:white;">
+
+                            @item.SchoolName
+
+                        </td>
+
+                        <td style="border:1px solid #d9d9d9;background:white;">
+
+                            @item.District
+
+                        </td>
+
+                        <td style="border:1px solid #d9d9d9;background:white;">
+
+                            @item.Block
+
+                        </td>
+
+                        <td style="border:1px solid #d9d9d9;background:white;">
+
+                            @item.Address
+
+                        </td>
+
+                        <td style="border:1px solid #d9d9d9;background:white;">
+
+                            @item.ContactNo
+
+                        </td>
+
+                        <td style="border:1px solid #d9d9d9;background:white;">
+
+                            <a asp-action="Delete"
+                                   asp-route-id="@item.ID"
+                                   onclick="return confirm('Are you sure?')">
+
+                                <img src="~/images/delete.png"
+                                     width="26" />
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+    // DISTRICT
+
+    const districtInput = document.getElementById("districtInput");
+    const districtDropdown = document.getElementById("districtDropdown");
+    const districtItems = document.querySelectorAll(".district-item");
+
+    districtInput.addEventListener("keyup", function () {
+
+        let filter = this.value.toLowerCase();
+        let hasData = false;
+
+        if (filter === "") {
+
+            districtDropdown.style.display = "none";
+            return;
+
+        }
+
+        districtDropdown.style.display = "block";
+
+        districtItems.forEach(function (item) {
+
+            if (item.innerText.toLowerCase().includes(filter)) {
+
+                item.style.display = "block";
+                hasData = true;
+
+            } else {
+
+                item.style.display = "none";
+
+            }
+
+        });
+
+        if (!hasData) {
+
+            districtDropdown.style.display = "none";
+
+        }
+
+    });
+
+    districtItems.forEach(function (item) {
+
+        item.addEventListener("click", function () {
+
+            districtInput.value = this.innerText;
+            districtDropdown.style.display = "none";
+
+        });
+
+    });
+
+    // BLOCK
+
+    const blockInput = document.getElementById("blockInput");
+    const blockDropdown = document.getElementById("blockDropdown");
+    const blockItems = document.querySelectorAll(".block-item");
+
+    blockInput.addEventListener("keyup", function () {
+
+        let filter = this.value.toLowerCase();
+        let hasData = false;
+
+        if (filter === "") {
+
+            blockDropdown.style.display = "none";
+            return;
+
+        }
+
+        blockDropdown.style.display = "block";
+
+        blockItems.forEach(function (item) {
+
+            if (item.innerText.toLowerCase().includes(filter)) {
+
+                item.style.display = "block";
+                hasData = true;
+
+            } else {
+
+                item.style.display = "none";
+
+            }
+
+        });
+
+        if (!hasData) {
+
+            blockDropdown.style.display = "none";
+
+        }
+
+    });
+
+    blockItems.forEach(function (item) {
+
+        item.addEventListener("click", function () {
+
+            blockInput.value = this.innerText;
+            blockDropdown.style.display = "none";
+
+        });
+
+    });
+
+    // HIDE DROPDOWN
+
+    document.addEventListener("click", function (e) {
+
+        if (!districtInput.contains(e.target) &&
+            !districtDropdown.contains(e.target)) {
+
+            districtDropdown.style.display = "none";
+
+        }
+
+        if (!blockInput.contains(e.target) &&
+            !blockDropdown.contains(e.target)) {
+
+            blockDropdown.style.display = "none";
+
+        }
+
+    });
+        function validateSchoolName(input) {
+
+        var error = document.getElementById("schoolNameError");
+
+        var originalValue = input.value;
+
+        // Remove numbers only
+        input.value = input.value.replace(/[0-9]/g, '');
+
+        if (originalValue !== input.value) {
+
+            error.innerHTML =
+                "Only letters and special characters are allowed.";
+
+        } else {
+
+            error.innerHTML = "";
+        }
+    }
+        function validateContactNo(input) {
+
+        var error = document.getElementById("contactNoError");
+
+        var originalValue = input.value;
+
+        // Allow only numbers
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        if (originalValue !== input.value) {
+
+            error.innerHTML = "Only numbers are allowed.";
+
+        } else {
+
+            error.innerHTML = "";
+        }
+
+        // Check 10 digits
+        if (input.value.length > 0 && input.value.length < 10) {
+
+            error.innerHTML = "Contact number must be 10 digits.";
+
+        }
+
+        if (input.value.length === 10) {
+
+            error.innerHTML = "";
+        }
+    }
+</script>

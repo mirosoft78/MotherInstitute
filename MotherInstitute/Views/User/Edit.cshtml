@@ -1,0 +1,28 @@
+﻿@model MotherInstitute.Models.User
+
+<h2>Edit User</h2>
+
+<form asp-action="Edit" method="post">
+    <label>Login ID</label>
+    <input asp-for="LOGINID" readonly /><br /><br />
+
+    <label>Name</label>
+    <input asp-for="NAME" /><br /><br />
+
+    <label>Password</label>
+    <input asp-for="PSW" /><br /><br />
+
+    <label>Type</label>
+    <select asp-for="TYPE">
+        <option value="ADMIN">ADMIN</option>
+        <option value="EXECUTIVE">EXECUTIVE</option>
+    </select><br /><br />
+
+    <label>Status</label>
+    <select asp-for="STATUS">
+        <option value="ACTIVE">ACTIVE</option>
+        <option value="DEACTIVE">DEACTIVE</option>
+    </select><br /><br />
+
+    <button type="submit">Update</button>
+</form>

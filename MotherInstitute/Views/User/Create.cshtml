@@ -1,0 +1,22 @@
+﻿@model MotherInstitute.Models.User
+
+<h2>Create User</h2>
+
+<form asp-action="Create" method="post">
+    <label>Login ID</label>
+    <input asp-for="LOGINID" /><br /><br />
+
+    <label>Name</label>
+    <input asp-for="NAME" /><br /><br />
+
+    <label>Password</label>
+    <input asp-for="PSW" /><br /><br />
+
+    <label>Type</label>
+    <select asp-for="TYPE">
+        <option value="ADMIN">ADMIN</option>
+        <option value="EXECUTIVE">EXECUTIVE</option>
+    </select><br /><br />
+
+    <button type="submit">Save</button>
+</form>

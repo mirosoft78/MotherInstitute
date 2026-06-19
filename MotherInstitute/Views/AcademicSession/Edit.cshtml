@@ -1,0 +1,19 @@
+﻿@model MotherInstitute.Models.AcademicSession
+
+@{
+    ViewData["Title"] = "Edit Academic Session";
+}
+
+<h2>Edit Academic Session</h2>
+
+<form asp-action="Edit" method="post">
+    <input asp-for="SLNO" type="hidden" />
+
+    <div style="margin-bottom:15px;">
+        <label>Session Name</label><br />
+        <input asp-for="NAME" />
+    </div>
+
+    <button type="submit">Update</button>
+    <a asp-action="Index" style="margin-left:10px;">Cancel</a>
+</form>

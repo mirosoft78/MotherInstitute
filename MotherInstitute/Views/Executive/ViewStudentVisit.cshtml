@@ -1,0 +1,416 @@
+﻿@model List<MotherInstitute.Models.MarketingStudent>
+
+@{
+    ViewData["Title"] = "View Student Visit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .erp-wrapper {
+        margin-top: 25px;
+        border: 3px solid red;
+        border-radius: 32px;
+        overflow: hidden;
+        background: #f5f5f5;
+    }
+
+    .erp-header {
+        background: linear-gradient(90deg,#1d5fe3,#2fc4ef);
+        color: white;
+        text-align: center;
+        padding: 14px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .erp-body {
+        padding: 20px;
+    }
+
+    .erp-label {
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .erp-input {
+        height: 42px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+
+    .erp-btn {
+        height: 42px;
+        width: 100%;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        background: #216cf0;
+        border: none;
+        color: white;
+    }
+
+    .erp-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 11px;
+    }
+
+        .erp-table thead tr {
+            background: #2947b8;
+            color: white;
+            height: 45px;
+        }
+
+        .erp-table th {
+            text-align: center;
+            border: 1px solid #425cc4;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .erp-table td {
+            text-align: center;
+            border: 1px solid #d7d7d7;
+            padding: 10px;
+            font-size: 11px;
+            background: white;
+        }
+
+    .history-title {
+        color: #13854f;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+</style>
+
+<div class="container-fluid px-0">
+
+    <!-- SEARCH SECTION -->
+
+    <div class="erp-wrapper">
+
+        <div class="erp-header">
+
+            Search Student
+
+        </div>
+
+        <div class="erp-body">
+
+            <form method="get">
+
+                <div class="row align-items-end">
+
+                    <!-- STUDENT SEARCH -->
+
+                    <div class="col-md-4 mb-3 position-relative">
+
+                        <div class="d-flex align-items-center">
+
+                            <label style="
+                                width:160px;
+                                font-size:12px;
+                                font-weight:700;
+                                margin-bottom:0;">
+
+                                Student ID / Name
+
+                            </label>
+
+                            <div style="width:100%;">
+
+                                <input type="text"
+                                       id="studentSearch"
+                                       name="studentId"
+                                       value="@ViewBag.StudentId"
+                                       class="form-control erp-input"
+                                       placeholder="Search Student"
+                                       autocomplete="off"
+                                       style="
+                                height:38px;
+                                font-size:12px;
+                                border-radius:6px;" />
+
+                                <div id="studentDropdown"
+                                     class="list-group position-absolute shadow rounded-3"
+                                     style="
+                                    z-index:1000;
+                                    max-height:300px;
+                                    overflow-y:auto;
+                                    display:none;
+                                    width:68%;">
+
+                                    @foreach (var student in Model)
+                                    {
+                                        <a href="#"
+                                               class="list-group-item list-group-item-action student-item"
+                                               data-id="@student.ID">
+
+                                            @student.ID - @student.StudentName
+
+                                        </a>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- FROM DATE -->
+
+                    <div class="col-md-3 mb-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <label style="
+                                width:110px;
+                                font-size:12px;
+                                font-weight:700;
+                                margin-bottom:0;">
+
+                                From Date
+
+                            </label>
+
+                            <input type="date"
+                                   name="fromDate"
+                                   value="@ViewBag.FromDate"
+                                   class="form-control"
+                                   style="
+                            height:38px;
+                            font-size:12px;
+                            border-radius:6px;" />
+
+                        </div>
+
+                    </div>
+
+                    <!-- TO DATE -->
+
+                    <div class="col-md-3 mb-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <label style="
+                                width:90px;
+                                font-size:12px;
+                                font-weight:700;
+                                margin-bottom:0;">
+
+                                To Date
+
+                            </label>
+
+                            <input type="date"
+                                   name="toDate"
+                                   value="@ViewBag.ToDate"
+                                   class="form-control"
+                                   style="
+                            height:38px;
+                            font-size:12px;
+                            border-radius:6px;" />
+
+                        </div>
+
+                    </div>
+
+                    <!-- BUTTON -->
+
+                    <div class="col-md-2 mb-3">
+
+                        <button type="submit"
+                                name="showData"
+                                value="true"
+                                class="btn btn-primary w-100"
+                                style="
+                            height:38px;
+                            border-radius:6px;
+                            font-size:12px;
+                            font-weight:600;">
+
+                            View
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- VISIT HISTORY -->
+
+    <div class="erp-wrapper mt-4">
+
+        <div class="erp-header">
+
+            Marketing Visit History
+
+        </div>
+
+        <div class="erp-body">
+
+            <div class="table-responsive">
+
+                <table class="erp-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>SLNO</th>
+                            <th>ID</th>
+                            <th>Student Name</th>
+                            <th>Agent</th>
+                            <th>Visit Date</th>
+                            <th>Notes</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (ViewBag.VisitList != null &&
+                                                     ViewBag.VisitList.Count > 0)
+                        {
+                            foreach (var item in ViewBag.VisitList)
+                            {
+                                <tr>
+
+                                    <td>@item.SLNO</td>
+
+                                    <td>@item.ID</td>
+
+                                    <td>@item.StudentName</td>
+
+                                    <td>@item.Agent</td>
+
+                                    <td>
+                                        @item.VisitDate.ToString("dd-MM-yyyy hh:mm tt")
+                                    </td>
+
+                                    <td>@item.Notes</td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="6"
+                                    style="
+                                    color:red;
+                                    font-weight:700;
+                                    text-align:center;">
+
+                                    No Visit Data Found
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const searchBox = document.getElementById("studentSearch");
+
+    const dropdown = document.getElementById("studentDropdown");
+
+    const items = document.querySelectorAll(".student-item");
+
+    searchBox.addEventListener("keyup", function () {
+
+        let value = this.value.toLowerCase().trim();
+
+        if (value === "") {
+
+            dropdown.style.display = "none";
+
+            return;
+        }
+
+        dropdown.style.display = "block";
+
+        let visibleCount = 0;
+
+        items.forEach(item => {
+
+            let text = item.innerText.toLowerCase();
+
+            if (text.includes(value)) {
+
+                item.style.display = "block";
+
+                visibleCount++;
+
+            }
+            else {
+
+                item.style.display = "none";
+
+            }
+
+        });
+
+        if (visibleCount === 0) {
+
+            dropdown.style.display = "none";
+
+        }
+
+    });
+
+    items.forEach(item => {
+
+        item.addEventListener("click", function (e) {
+
+            e.preventDefault();
+
+            searchBox.value = this.dataset.id;
+
+            dropdown.style.display = "none";
+
+        });
+
+    });
+
+    document.addEventListener("click", function (e) {
+
+        if (!searchBox.contains(e.target)
+            &&
+            !dropdown.contains(e.target)) {
+
+            dropdown.style.display = "none";
+
+        }
+
+    });
+
+</script>

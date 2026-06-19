@@ -1,0 +1,411 @@
+﻿@model IEnumerable<MotherInstitute.Models.StudentRegd>
+
+@{
+    var formStudentId = Context.Request.HasFormContentType ? Context.Request.Form["studentId"].ToString() : "";
+    var formMobile = Context.Request.HasFormContentType ? Context.Request.Form["mobile"].ToString() : "";
+    var formYear = Context.Request.HasFormContentType ? Context.Request.Form["year"].ToString() : "";
+}
+
+<div class="main-content-box">
+
+    <style>
+
+            .student-search-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px 30px;
+                padding: 12px;
+            }
+
+            .student-search-group {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                position: relative;
+            }
+
+                .student-search-group label {
+                    width: 130px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: #1f2937;
+                }
+
+                .student-search-group input,
+                .student-search-group select {
+                    width: 100%;
+                    height: 40px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 8px;
+                    padding: 0 12px;
+                    font-size: 14px;
+                }
+
+            .student-btn-row {
+                padding: 0 12px 12px 12px;
+            }
+
+            .student-btn {
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 8px 25px;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+                .student-btn:hover {
+                    background: #1d4ed8;
+                }
+
+            .table-wrapper {
+                overflow-x: auto;
+                padding: 0 4px 4px 4px;
+            }
+
+            .student-table {
+                min-width: 2200px;
+            }
+
+            .action-icon {
+                width: 22px;
+                height: 22px;
+                cursor: pointer;
+            }
+
+            /* GOOGLE STYLE SEARCH */
+
+            .suggestion-box {
+                position: absolute;
+                top: 44px;
+                left: 0;
+                width: 100%;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+                z-index: 9999;
+                display: none;
+                max-height: 250px;
+                overflow-y: auto;
+            }
+
+            .suggestion-item {
+                padding: 12px 16px;
+                cursor: pointer;
+                font-size: 15px;
+                border-bottom: 1px solid #f1f1f1;
+            }
+
+                .suggestion-item:hover {
+                    background: #f3f4f6;
+                }
+
+            @@media(max-width:900px) {
+
+                .student-search-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .student-search-group {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                    .student-search-group label {
+                        width: 100%;
+                    }
+            }
+
+    </style>
+
+    <div class="page-header">
+        <h2>View Students Registration</h2>
+    </div>
+
+    <form method="post"
+          asp-controller="ViewStudentsRegistration"
+          asp-action="Index">
+
+        <div class="student-search-grid">
+
+            <!-- STUDENT ID -->
+
+            <div class="student-search-group">
+
+                <label>Student ID</label>
+
+                <div style="width:100%; position:relative;">
+
+                    <input type="text"
+                           name="studentId"
+                           id="studentId"
+                           value="@formStudentId"
+                           placeholder="Enter Student ID"
+                           autocomplete="off" />
+
+                    <div id="studentSuggestion"
+                         class="suggestion-box">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- MOBILE -->
+
+            <div class="student-search-group">
+
+                <label>Mobile No</label>
+
+                <input type="text"
+                       name="mobile"
+                       value="@formMobile"
+                       placeholder="Enter Mobile No" />
+
+            </div>
+
+            <!-- SESSION -->
+
+            <div class="student-search-group">
+
+                <label>Session</label>
+
+                <input type="text"
+                       id="sessionSearch"
+                       list="sessionList"
+                       name="session"
+                       value="@ViewBag.SelectedSession"
+                       placeholder="Select Session"
+                       autocomplete="off" />
+
+                <datalist id="sessionList">
+
+                    @foreach (var s in ViewBag.Sessions)
+                    {
+                        <option value="@s"></option>
+                    }
+
+                </datalist>
+
+            </div>
+
+            <!-- COURSE -->
+
+            <div class="student-search-group">
+
+                <label>Course</label>
+
+                <select name="course">
+
+                    <option value="">Select Course</option>
+
+                    @foreach (var c in ViewBag.Courses)
+                    {
+                        <option value="@c">@c</option>
+                    }
+
+                </select>
+
+            </div>
+
+            <!-- CURRENT YEAR -->
+
+            <div class="student-search-group">
+
+                <label>Current Year</label>
+
+                <select name="year">
+
+                    <option value="">Select Year</option>
+
+                    <option value="SUMMER">SUMMER</option>
+                    <option value="1ST YEAR">1ST YEAR</option>
+                    <option value="2ND YEAR">2ND YEAR</option>
+                    <option value="EXIT">EXIT</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="student-btn-row">
+
+            <button type="submit"
+                    class="student-btn">
+
+                View
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <div class="table-wrapper">
+
+        <table class="student-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Edit</th>
+                    <th>DOR</th>
+                    <th>Student ID</th>
+                    <th>Session</th>
+                    <th>Course</th>
+                    <th>Name</th>
+                    <th>DOB</th>
+                    <th>Father</th>
+                    <th>Mother</th>
+                    <th>Address</th>
+                    <th>Mobile1</th>
+                    <th>Mobile2</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+
+                                <a asp-controller="ViewStudentsRegistration"
+                                       asp-action="EditStudentRegistration"
+                                       asp-route-studentId="@item.STUDENTID">
+
+                                    <img src="~/images/edit.png"
+                                         class="action-icon" />
+
+                                </a>
+
+                            </td>
+
+                            <td>@item.DOR?.ToString("dd-MM-yyyy")</td>
+                            <td>@item.STUDENTID</td>
+                            <td>@item.SESSION</td>
+                            <td>@item.COURSE</td>
+                            <td>@item.NAME</td>
+                            <td>@item.DOB?.ToString("dd-MM-yyyy")</td>
+                            <td>@item.FNAME</td>
+                            <td>@item.MNAME</td>
+                            <td>@item.ADDRESS</td>
+                            <td>@item.MOB1</td>
+                            <td>@item.MOB2</td>
+
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+
+                        <td colspan="12"
+                            style="text-align:center;">
+
+                            No student records found.
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+            const studentIds = [
+
+        @foreach (var item in ViewBag.StudentIds)
+        {
+                <text>"@item",</text>
+        }
+
+    ];
+
+    const input =
+        document.getElementById("studentId");
+
+    const suggestionBox =
+        document.getElementById("studentSuggestion");
+
+    input.addEventListener("keyup", function () {
+
+        let value =
+            this.value.toLowerCase();
+
+        suggestionBox.innerHTML = "";
+
+        if (value.length == 0) {
+
+            suggestionBox.style.display = "none";
+
+            return;
+        }
+
+        let filtered =
+            studentIds.filter(function (x) {
+
+                return x.toLowerCase()
+                        .includes(value);
+
+            });
+
+        if (filtered.length > 0) {
+
+            suggestionBox.style.display = "block";
+        }
+        else {
+
+            suggestionBox.style.display = "none";
+        }
+
+        filtered.forEach(function (item) {
+
+            let div =
+                document.createElement("div");
+
+            div.className =
+                "suggestion-item";
+
+            div.innerHTML = item;
+
+            div.onclick = function () {
+
+                input.value = item;
+
+                suggestionBox.style.display = "none";
+            };
+
+            suggestionBox.appendChild(div);
+
+        });
+
+    });
+
+    document.addEventListener("click",
+        function (e) {
+
+            if (e.target != input) {
+
+                suggestionBox.style.display = "none";
+            }
+
+        });
+
+</script>
